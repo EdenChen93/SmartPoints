@@ -68,7 +68,6 @@ namespace SPCWTest
                             Oringal_SpcW.Inilize();
                             SPCTree.Nodes.Clear();
                             SPCTree.Nodes.Add(Oringal_SpcW.pointsCloud.SpcName);
-                            SpcTreeNodesAddNewInfo(SPCTree.Nodes[0].Nodes, Oringal_SpcW);
                             MessageBox.Show("读取数据成功");
                             break;
                         case "m3dm":
@@ -103,6 +102,7 @@ namespace SPCWTest
             {
                 MessageBox.Show("未选择数据文件");
             }
+
         }
         private void Lines_RemoveAtEvent(int i)
         {
@@ -113,50 +113,13 @@ namespace SPCWTest
             i.RoiAreaLineChangeEvent += I_RoiAreaLineChangeEvent;
             string nodename = "L" + SPCTree.Nodes[0].Nodes["Lines:"].Nodes.Count;
             SPCTree.Nodes[0].Nodes["Lines:"].Nodes.Add(nodename, nodename + ":" + i.rectangle.ToString());
-            chartWindowForm = new ChartWindowForm();
-            List<float> data;
-            Oringal_SpcW.pointsCloud.LineClipingFloatA(i.rectangle, out data);
-            chartWindowForm.control_index = 0;
-            chartWindowForm.line_index = Oringal_SpcW.pointsCloud.lines.Count-1;
-            chartWindowForm.control_type = 0;
-            chartWindowForm._data_source = data;
-            chartWindowForm.data_source = data;
-            chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
-            chartWindowForm.UpdateChartData();
-            chartWindowForm.UpdateLineTree();
-            chartWindowForm.Show();
         }
 
         private Rectangle I_RoiAreaLineChangeEvent(Rectangle rectangle)
         {
             int i = Oringal_SpcW.pointsCloud.lines.index;
-            SPCTree.Nodes[0].Nodes["Lines:"].Nodes[i].Text ="L"+i+":"+ rectangle.ToString();
-            if (chartWindowForm!=null&&!chartWindowForm.IsDisposed)
-            {
-                List<float> data;
-                Oringal_SpcW.pointsCloud.LineClipingFloatA(rectangle, out data);
-                chartWindowForm._data_source = data;
-                chartWindowForm.data_source = data;
-                chartWindowForm.Process(data);
-                chartWindowForm.control_type = 0;
-                chartWindowForm.control_index = 0;
-                chartWindowForm.line_index = Oringal_SpcW.pointsCloud.lines.index;
-            }
-            else
-            {
-                chartWindowForm = new ChartWindowForm();
-                List<float> data;
-                Oringal_SpcW.pointsCloud.LineClipingFloatA(rectangle, out data);
-                chartWindowForm.data_source = data;
-                chartWindowForm._data_source = data;
-                chartWindowForm.UpdateChartData();
-                chartWindowForm.UpdateLineTree();
-                chartWindowForm.control_type = 0;
-                chartWindowForm.control_index = 0;
-                chartWindowForm.line_index = Oringal_SpcW.pointsCloud.lines.index;
-                chartWindowForm.Show();
-            }
             return rectangle;
+
         }
         private void Points_RemoveAtEvent(int i)
         {

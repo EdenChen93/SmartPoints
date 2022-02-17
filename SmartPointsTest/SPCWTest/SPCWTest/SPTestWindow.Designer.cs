@@ -67,7 +67,6 @@
             // 打开ToolStripMenuItem
             // 
             this.打开ToolStripMenuItem.Name = "打开ToolStripMenuItem";
-            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.打开ToolStripMenuItem.Text = "打开";
             this.打开ToolStripMenuItem.Click += new System.EventHandler(this.打开ToolStripMenuItem_Click);
             // 
@@ -116,7 +115,6 @@
             this.SPCTree.Font = new System.Drawing.Font("宋体", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.SPCTree.Location = new System.Drawing.Point(0, 53);
             this.SPCTree.Name = "SPCTree";
-            this.SPCTree.Size = new System.Drawing.Size(297, 635);
             this.SPCTree.TabIndex = 1;
             // 
             // toolStrip1
@@ -162,6 +160,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem TSMItem_File;
         private System.Windows.Forms.ToolStripMenuItem 打开ToolStripMenuItem;
+        private System.Windows.Forms.TreeView SPCTree;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.Panel SpcwPanle;
         private System.Windows.Forms.ToolStripMenuItem 设备ToolStripMenuItem;

@@ -142,6 +142,7 @@ namespace SmartPoints
             CGC=3,
             CGCP=4,
         }
+
         public class RoiAreaPoint
         {
             public RoiAreaPoint(int w = 0, int h = 0, int x = 0, int y = 0)
@@ -206,6 +207,7 @@ namespace SmartPoints
                 //
             }
         }
+
         public class RoiAreaCircle
         {
             public RoiAreaCircle(int w = 0, int h = 0, int x = 0, int y = 0)
@@ -271,6 +273,7 @@ namespace SmartPoints
                 //
             }
         }
+
         public class RoiAreaRect
         {
             public RoiAreaRect(int w = 0, int h = 0, int x = 0, int y = 0)
@@ -334,6 +337,7 @@ namespace SmartPoints
                 //
             }
         }
+
         public class RoiAreaLine
         {
             public RoiAreaLine(int w = 0, int h = 0, int x = 0, int y = 0)
@@ -400,6 +404,7 @@ namespace SmartPoints
                 //
             }
         }
+
         public struct SpcPoints
         {
             public List<float> pointsx;
@@ -1256,6 +1261,8 @@ namespace SmartPoints
         }
         public class SmartPointsCloudContour
         {
+
+
             public string ControurName { get; set; }
         }
         public class SP_FileReader
@@ -1507,7 +1514,6 @@ namespace SmartPoints
                 {
                     for (int x = 0; x < w; x++)
                     {
-                        if (mP3D.Data[x + y * w].Z > -mP3D.ZMax && mP3D.Data[x + y * w].Z < mP3D.ZMax && mP3D.Data[x + y * w].Mask == 0)
                         {
                             vs[x + y * w] = mP3D.Data[x + y * w].Z;
                             vsx[x + y * w] = mP3D.Data[x + y * w].X;
@@ -2811,7 +2817,7 @@ namespace SmartPoints
                                     else
                                     {
                                         fpc += res[n][x] + ",";
-                                    }
+        }
                                 }
                                 fpc += ";";
                             }
@@ -3207,6 +3213,8 @@ namespace SmartPoints
                         }
                     }
                 }
+                CvInvoke.Canny(mat, mat, 20, 100);
+                CvInvoke.Imshow("Cannny", mat);
                 return dst;
             }
             public static SmartPointsCloud CvGetNewSPCFromContour(SmartPointsCloud pointsCloud,VectorOfPoint c)
@@ -3306,8 +3314,8 @@ namespace SmartPoints
                              circles_res.Add(circles[c]);
                              center_res.Add(centers[c]);
                         } 
-                    }
-                }
+            }
+        }
                 for (int i = 0; i < circles_res.Count; i++)
                 {
                     CvInvoke.Circle(image, center_res[i], (int)Math.Round(circles_res[i].Radius), new MCvScalar(35, 111, 211),3);

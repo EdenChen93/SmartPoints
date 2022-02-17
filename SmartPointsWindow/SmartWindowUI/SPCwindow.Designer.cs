@@ -59,6 +59,5 @@
 
         #endregion
 
-        public System.Windows.Forms.PictureBox SPCWPictureBox;
     }
 }
