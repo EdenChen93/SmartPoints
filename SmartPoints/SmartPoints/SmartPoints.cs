@@ -3294,13 +3294,13 @@ namespace SmartPoints
                 CvInvoke.FindContours(mat, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
                 List<Point> centers = new List<Point>();
                 List<Point> center_res = new List<Point>();
-                List<CircleF> circles = new List<CircleF>();
-                List<CircleF> circles_res = new List<CircleF>();
+                List<RotatedRect> circles = new List<RotatedRect>();
+                List<RotatedRect> circles_res = new List<RotatedRect>();
                 for (int i = 0; i < contours.Size; i++)
                 {
                     if (contours[i].Size > 155)
                     {
-                        CircleF circle = CvInvoke.MinEnclosingCircle(contours[i]);
+                        RotatedRect circle = CvInvoke.FitEllipse(contours[i]);
                         Point center = new Point((int)Math.Round(circle.Center.X), (int)Math.Round(circle.Center.Y));
                         centers.Add(center);
                         circles.Add(circle);
@@ -3319,7 +3319,11 @@ namespace SmartPoints
         }
                 for (int i = 0; i < circles_res.Count; i++)
                 {
-                    CvInvoke.Circle(image, center_res[i], (int)Math.Round(circles_res[i].Radius), new MCvScalar(35, 111, 211),3);
+                    Random random = new Random(DateTime.Now.Millisecond);
+                    int r= random.Next(0, 255);System.Threading.Thread.Sleep(5);
+                    int g = random.Next(0, 255); System.Threading.Thread.Sleep(5);
+                    int b = random.Next(0, 255); System.Threading.Thread.Sleep(5);
+                    CvInvoke.Ellipse(image,circles_res[i], new MCvScalar(r, g, b),3);
                 }
                 return image.Bitmap;
             }
