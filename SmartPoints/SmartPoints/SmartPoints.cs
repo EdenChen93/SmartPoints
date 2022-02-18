@@ -1514,6 +1514,7 @@ namespace SmartPoints
                 {
                     for (int x = 0; x < w; x++)
                     {
+                        if (mP3D.Data[x + y * w].Z > -mP3D.ZMax && mP3D.Data[x + y * w].Z < mP3D.ZMax && mP3D.Data[x + y * w].Mask == 0 && mP3D.Data[x + y * w].Gray > 33)//
                         {
                             vs[x + y * w] = mP3D.Data[x + y * w].Z;
                             vsx[x + y * w] = mP3D.Data[x + y * w].X;
