@@ -471,6 +471,11 @@ namespace SmartPoints
                 Bitmap bitmap = SP_Image.FloatArray_BMPWB(this.Spcpoints.pointsz.ToArray(), this.Width, this.Height, this.Zmax, this.Zmin);
                 return bitmap;
             }
+            public Bitmap GetBitmapNaN()
+            {
+                Bitmap bitmap = SP_Image.FloatArray_BMPNAN(this.Spcpoints.pointsz.ToArray(), this.Width, this.Height);
+                return bitmap;
+            }
             /// <summary>
             /// 获取指定索引出点的XYZ值
             /// </summary>
@@ -1481,7 +1486,7 @@ namespace SmartPoints
                 {
                     for (int x = 0; x < w; x++)
                     {
-                        if (mP3D.Data[x + y * w].Z > -mP3D.ZMax && mP3D.Data[x + y * w].Z < mP3D.ZMax && mP3D.Data[x + y * w].Mask == 0 && mP3D.Data[x + y * w].Gray > 33)//
+                        if (mP3D.Data[x + y * w].Z > -mP3D.ZMax && mP3D.Data[x + y * w].Z < mP3D.ZMax && mP3D.Data[x + y * w].Mask == 0)//&& mP3D.Data[x + y * w].Gray > 33
                         {
                             vs[x + y * w] = mP3D.Data[x + y * w].Z;
                             vsx[x + y * w] = mP3D.Data[x + y * w].X;
@@ -2548,6 +2553,40 @@ namespace SmartPoints
                     throw;
                 }
             }
+            public static Bitmap FloatArray_BMPNAN(float[] vs, int w, int h)
+            {
+                try
+                {
+                    Bitmap bitmaps = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    System.Drawing.Imaging.BitmapData bitmapData = bitmaps.LockBits(new Rectangle(0, 0, w, h), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    IntPtr ptr = bitmapData.Scan0;
+                    int offset = bitmapData.Stride - w * 3;
+                    byte[] bitmaprawbytes = new byte[bitmapData.Stride * h];
+                    int posscan = 0; int posreal = 0;
+                    byte[] rawvalue = Float2NaNBytes(vs, w, h);
+                    for (int y = 0; y < h; y++)
+                    {
+                        for (int x = 0; x < w; x++)
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                bitmaprawbytes[posscan + i] = rawvalue[posreal + i];
+                            }
+                            posscan = posscan + 3;
+                            posreal = posreal + 3;
+                        }
+                        posscan = posscan + offset;
+                    }
+                    Marshal.Copy(bitmaprawbytes, 0, ptr, bitmaprawbytes.Length);
+                    bitmaps.UnlockBits(bitmapData);
+                    return bitmaps;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
             public static BitMiracle.LibTiff.Classic.Tiff WriteFloatListToTiff(List<float> ds, String path, int w, int h)
             {
                 BitMiracle.LibTiff.Classic.Tiff tiff = BitMiracle.LibTiff.Classic.Tiff.Open(path, "w");
@@ -2624,6 +2663,29 @@ namespace SmartPoints
                     {
                         int i = w * y + x;
                         Color temp = SP_Color.TransZToWBColor(vs[i], maxf, minf);
+                        bitmapdatabytes[i * 3] = temp.R; bitmapdatabytes[i * 3 + 1] = temp.G; bitmapdatabytes[i * 3 + 2] = temp.B;
+                    }
+                }
+                return bitmapdatabytes;
+            }
+            public static byte[] Float2NaNBytes(float[] vs, int w, int h)
+            {
+
+                byte[] bitmapdatabytes = new byte[w * h * 3];
+                for (int y = 0; y < h; y++)
+                {
+                    for (int x = 0; x < w; x++)
+                    {
+                        int i = w * y + x;
+                        Color temp;
+                        if (float.IsNaN(vs[i]))
+                        {
+                            temp = Color.White;
+                        }
+                        else
+                        {
+                            temp = Color.Black;
+                        }
                         bitmapdatabytes[i * 3] = temp.R; bitmapdatabytes[i * 3 + 1] = temp.G; bitmapdatabytes[i * 3 + 2] = temp.B;
                     }
                 }
@@ -3065,7 +3127,7 @@ namespace SmartPoints
                 CircleF[] circles=  CvInvoke.HoughCircles(mat, HoughType.Gradient, 1,10);
                 return circles;
             }
-            public static List<Point[]> CvGetContoursInPoints(Bitmap bitmap,int filter=15)
+            public static List<Point[]> CvGetContoursInPoints(Bitmap bitmap,int filter=1)
             {
                 Image<Rgb, byte> image = new Image<Rgb, byte>(bitmap);
                 Image<Rgb, byte> mat = new Image<Rgb, byte>(bitmap);
@@ -3294,13 +3356,13 @@ namespace SmartPoints
                 CvInvoke.FindContours(mat, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
                 List<Point> centers = new List<Point>();
                 List<Point> center_res = new List<Point>();
-                List<CircleF> circles = new List<CircleF>();
-                List<CircleF> circles_res = new List<CircleF>();
+                List<RotatedRect> circles = new List<RotatedRect>();
+                List<RotatedRect> circles_res = new List<RotatedRect>();
                 for (int i = 0; i < contours.Size; i++)
                 {
                     if (contours[i].Size > 155)
                     {
-                        CircleF circle = CvInvoke.MinEnclosingCircle(contours[i]);
+                        RotatedRect circle = CvInvoke.FitEllipse(contours[i]);
                         Point center = new Point((int)Math.Round(circle.Center.X), (int)Math.Round(circle.Center.Y));
                         centers.Add(center);
                         circles.Add(circle);
@@ -3319,11 +3381,39 @@ namespace SmartPoints
         }
                 for (int i = 0; i < circles_res.Count; i++)
                 {
-                    CvInvoke.Circle(image, center_res[i], (int)Math.Round(circles_res[i].Radius), new MCvScalar(35, 111, 211),3);
+                    Random random = new Random(DateTime.Now.Millisecond);
+                    int r= random.Next(0, 255);System.Threading.Thread.Sleep(5);
+                    int g = random.Next(0, 255); System.Threading.Thread.Sleep(5);
+                    int b = random.Next(0, 255); System.Threading.Thread.Sleep(5);
+                    CvInvoke.Ellipse(image,circles_res[i], new MCvScalar(r, g, b),3);
                 }
                 return image.Bitmap;
             }
-
+            public static void CvFillNaN(SmartPointsCloud pointsCloud)
+            {
+                Random random=new Random();
+                List<float> h_line;
+                List<float> v_line;
+                List<float> h_matpoints = new List<float>();
+                for (int y = 0; y < pointsCloud.Height; y++)
+                {
+                    pointsCloud.LineClipingFloatA(new Point[] { new Point(0, y), new Point(pointsCloud.Width, y) }, out h_line);
+                    SP_Translate.FindPointsCollection(h_line, 20);
+                    SP_Translate.FillPointsCollection(h_line, "m");
+                    h_matpoints.AddRange(h_line);
+                }
+                for (int x = 0; x < pointsCloud.Width; x++)
+                {
+                    pointsCloud.LineClipingFloatA(new Point[] { new Point(x, 0), new Point(x, pointsCloud.Height) }, out v_line);
+                    SP_Translate.FindPointsCollection(v_line, 20);
+                    SP_Translate.FillPointsCollection(v_line, "m");
+                    for (int y = 0; y < v_line.Count; y++)
+                    {
+                        int i = y * pointsCloud.Width  + x;
+                        pointsCloud.Spcpoints.pointsz[i] = (v_line[y] + h_matpoints[i]) / 2+random.Next(10,100)*0.0001f;
+                    }
+                }
+            }
         }
     }
 }

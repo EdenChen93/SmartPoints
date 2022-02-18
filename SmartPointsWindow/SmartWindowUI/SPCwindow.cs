@@ -30,10 +30,6 @@ namespace SPCwindowUI
         private Graphics graphics;
         public bool IsChecked = false;
         private bool GrapOn = false;
-        //public SmartPoints.SmartPoints.RoiPointtList points = new SmartPoints.SmartPoints.RoiPointtList();
-        //public SmartPoints.SmartPoints.RoiRectList pointsCloud.rects = new SmartPoints.SmartPoints.RoiRectList();
-        //public SmartPoints.SmartPoints.RoiLineList pointsCloud.lines = new SmartPoints.SmartPoints.RoiLineList();
-        //public SmartPoints.SmartPoints.RoiCircletList pointsCloud.circles = new SmartPoints.SmartPoints.RoiCircletList();
         public SmartPoints.SmartPoints.SmartPointsCloud pointsCloud;
 
         public SPCwindow()

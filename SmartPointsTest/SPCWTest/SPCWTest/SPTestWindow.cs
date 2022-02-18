@@ -18,8 +18,10 @@ namespace SPCWTest
             InitializeComponent();
         }
         public static SPCwindowUI.SPCwindow Oringal_SpcW = new SPCwindow();
+        private List<SmartPoints.SmartPoints.SmartPointsCloud> DeviceDataList = new List<SmartPoints.SmartPoints.SmartPointsCloud>();
         private ChartWindowForm chartWindowForm;
         private MegaPhaseHD megaPhaseHD;
+        private bool DeviceCtn = false;
         private void 打开ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             
@@ -68,6 +70,7 @@ namespace SPCWTest
                             Oringal_SpcW.Inilize();
                             SPCTree.Nodes.Clear();
                             SPCTree.Nodes.Add(Oringal_SpcW.pointsCloud.SpcName);
+                            SpcTreeNodesAddNewInfo(SPCTree.Nodes[0].Nodes, Oringal_SpcW);
                             MessageBox.Show("读取数据成功");
                             break;
                         case "m3dm":
@@ -113,11 +116,51 @@ namespace SPCWTest
             i.RoiAreaLineChangeEvent += I_RoiAreaLineChangeEvent;
             string nodename = "L" + SPCTree.Nodes[0].Nodes["Lines:"].Nodes.Count;
             SPCTree.Nodes[0].Nodes["Lines:"].Nodes.Add(nodename, nodename + ":" + i.rectangle.ToString());
-        }
+            Oringal_SpcW.pointsCloud.lines.index = Oringal_SpcW.pointsCloud.lines.Count-1;
 
+            if (chartWindowForm==null)
+            {
+                chartWindowForm = new ChartWindowForm();
+                chartWindowForm.UpdateLineTree();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
+            }
+            if (chartWindowForm.IsDisposed)
+            {
+                chartWindowForm = new ChartWindowForm();
+                chartWindowForm.UpdateLineTree();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
+            }
+            List<float> data;
+            Oringal_SpcW.pointsCloud.LineClipingFloatA(i.rectangle, out data);
+            chartWindowForm.data_source = data;
+            chartWindowForm._data_source = data;
+            chartWindowForm.control_type = 0;
+            chartWindowForm.line_index = Oringal_SpcW.pointsCloud.lines.index;
+            chartWindowForm.control_index = 0;
+            chartWindowForm.UpdateChartData();
+            chartWindowForm.Show();
+        }
         private Rectangle I_RoiAreaLineChangeEvent(Rectangle rectangle)
         {
+            int il = Oringal_SpcW.pointsCloud.lines.index;
+            string nodename = "L" + il+":";
+            SPCTree.Nodes[0].Nodes["Lines:"].Nodes[il].Text = nodename + rectangle;
+            if (chartWindowForm.IsDisposed)
+            {
+                chartWindowForm = new ChartWindowForm();
+                chartWindowForm.UpdateLineTree();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
+                chartWindowForm.Show();
+            }
             int i = Oringal_SpcW.pointsCloud.lines.index;
+            List<float> data;
+            Oringal_SpcW.pointsCloud.LineClipingFloatA(rectangle, out data);
+            chartWindowForm.data_source = data;
+            chartWindowForm._data_source = data;
+            chartWindowForm.control_index = 0;
+            chartWindowForm.control_type = 0;
+            chartWindowForm.line_index = i;
+            chartWindowForm.UpdateChartData();
             return rectangle;
 
         }
@@ -458,7 +501,12 @@ namespace SPCWTest
         }
         private void 触发ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            megaPhaseHD.HDSensor.FireSoftwareTrigger();
+            DeviceCtn = false;
+          for (int i = 0; i < 10; i++)
+          {
+             megaPhaseHD.HDSensor.FireSoftwareTrigger();
+             System.Threading.Thread.Sleep(2000);
+          }
         }
         private void 打开ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -471,33 +519,72 @@ namespace SPCWTest
             Oringal_SpcW.GetInfoEvent += SPCwindow_GetInfoEvent;
             Oringal_SpcW.Size = new Size(500, 500);
             this.SpcwPanle.Controls.Add(Oringal_SpcW);
+            megaPhaseHD.HDSensor.FireSoftwareTrigger();
         }
         private void MegaPhaseHD_ProcessHDEvent(SmartPoints.SmartPoints.SmartPointsCloud cloud)
         {
-            SPCwindow cwindow = new SPCwindow();
-            cwindow.pointsCloud = cloud;
-            cwindow.pointsCloud.rects.AddItemEvent += Rects_AddItemEvent;
-            cwindow.pointsCloud.rects.RemoveAtEvent += Rects_RemoveAtEvent;
-            cwindow.pointsCloud.circles.AddItemEvent += Circles_AddItemEvent;
-            cwindow.pointsCloud.circles.RemoveAtEvent += Circles_RemoveAtEvent;
-            cwindow.pointsCloud.points.AddItemEvent += Points_AddItemEvent;
-            cwindow.pointsCloud.points.RemoveAtEvent += Points_RemoveAtEvent;
-            cwindow.pointsCloud.lines.AddItemEvent += Lines_AddItemEvent;
-            cwindow.pointsCloud.lines.RemoveAtEvent += Lines_RemoveAtEvent;
-            cwindow.Inilize();
-            this.BeginInvoke(new Action(() =>
+            if (DeviceCtn)
             {
-                SPCTree.Nodes.Add(cwindow.pointsCloud.SpcName);
-                SpcTreeNodesAddNewInfo(SPCTree.Nodes[SPCTree.Nodes.Count - 1].Nodes, cwindow);
-            }));
-            if (Oringal_SpcW.pointsCloud==null)
-            {
-                Oringal_SpcW.pointsCloud = cwindow.pointsCloud;
+                Oringal_SpcW.pointsCloud = cloud;
+                Oringal_SpcW.pointsCloud.rects.AddItemEvent += Rects_AddItemEvent;
+                Oringal_SpcW.pointsCloud.rects.RemoveAtEvent += Rects_RemoveAtEvent;
+                Oringal_SpcW.pointsCloud.circles.AddItemEvent += Circles_AddItemEvent;
+                Oringal_SpcW.pointsCloud.circles.RemoveAtEvent += Circles_RemoveAtEvent;
+                Oringal_SpcW.pointsCloud.points.AddItemEvent += Points_AddItemEvent;
+                Oringal_SpcW.pointsCloud.points.RemoveAtEvent += Points_RemoveAtEvent;
+                Oringal_SpcW.pointsCloud.lines.AddItemEvent += Lines_AddItemEvent;
+                Oringal_SpcW.pointsCloud.lines.RemoveAtEvent += Lines_RemoveAtEvent;
                 Oringal_SpcW.Inilize();
             }
             else
             {
-                SpcwPanle.Controls.Add(cwindow);
+                if (Oringal_SpcW.pointsCloud == null)
+                {
+                    Oringal_SpcW.pointsCloud = cloud;
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        SPCTree.Nodes.Clear();
+                        SPCTree.Nodes.Add(Oringal_SpcW.pointsCloud.SpcName);
+                        SpcTreeNodesAddNewInfo(SPCTree.Nodes[SPCTree.Nodes.Count - 1].Nodes, Oringal_SpcW);
+                    }));
+                    Oringal_SpcW.pointsCloud.rects.AddItemEvent += Rects_AddItemEvent;
+                    Oringal_SpcW.pointsCloud.rects.RemoveAtEvent += Rects_RemoveAtEvent;
+                    Oringal_SpcW.pointsCloud.circles.AddItemEvent += Circles_AddItemEvent;
+                    Oringal_SpcW.pointsCloud.circles.RemoveAtEvent += Circles_RemoveAtEvent;
+                    Oringal_SpcW.pointsCloud.points.AddItemEvent += Points_AddItemEvent;
+                    Oringal_SpcW.pointsCloud.points.RemoveAtEvent += Points_RemoveAtEvent;
+                    Oringal_SpcW.pointsCloud.lines.AddItemEvent += Lines_AddItemEvent;
+                    Oringal_SpcW.pointsCloud.lines.RemoveAtEvent += Lines_RemoveAtEvent;
+                    Oringal_SpcW.Inilize();
+                }
+                else
+                {
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        for (int i = 0; i < Oringal_SpcW.pointsCloud.lines.Count; i++)
+                        {
+                            List<float> ds;
+                            List<string> res;
+                            cloud.LineClipingFloatA(Oringal_SpcW.pointsCloud.lines[i].rectangle, out ds);
+                            SmartPoints.SmartPoints.SP_Translate.ListFloatProcess(ds, SPCTree.Nodes[0].Nodes["Lines:"].Nodes[i].Nodes["Process"].Nodes, out res);
+                            List<float> ps = SmartPoints.SmartPoints.SP_Translate.FindPointsAtValue(ds, ds.GetRange(50, 5).Average() - 3.6f);
+                            float Gap = (float)(Math.Round(ps[1]) - Math.Round(ps[0])) * 0.009715f;
+                            System.IO.StreamWriter writer = new System.IO.StreamWriter("Gap.txt", true);
+                            if (i == Oringal_SpcW.pointsCloud.lines.Count - 1)
+                            {
+                                writer.Write(Gap + "\r\n");
+                            }
+                            else
+                            {
+                                writer.Write(Gap + ",");
+                            }
+                            writer.Close();
+                            writer.Dispose();
+                        }
+                        cloud = null;
+                    }));
+                }
+
             }
         }
         private void ChartWindowForm_ProcessEvent(TreeNodeCollection nodes)
@@ -512,9 +599,9 @@ namespace SPCWTest
                     else
                     {
                         SPCTree.Nodes[0].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Add("Process", "Process");
-                        foreach (var item in nodes)
+                        for (int i = 0; i < nodes.Count; i++)
                         {
-                            SPCTree.Nodes[0].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(item.ToString());
+                            SPCTree.Nodes[0].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(nodes[i].Name,nodes[i].Text);
                         }
                     }
                     break;
@@ -526,9 +613,9 @@ namespace SPCWTest
                     else
                     {
                         SPCTree.Nodes[0].Nodes["Rects:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Add("Process", "Process");
-                        foreach (var item in nodes)
+                        for (int i = 0; i < nodes.Count; i++)
                         {
-                            SPCTree.Nodes[0].Nodes["Rects:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(item.ToString());
+                            SPCTree.Nodes[0].Nodes["Rects:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(nodes[i].Name, nodes[i].Text);
                         }
                     }
                     break;
@@ -540,15 +627,79 @@ namespace SPCWTest
                     else
                     {
                         SPCTree.Nodes[0].Nodes["Circles:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Add("Process", "Process");
-                        foreach (var item in nodes)
+                        for (int i = 0; i < nodes.Count; i++)
                         {
-                            SPCTree.Nodes[0].Nodes["Circles:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(item.ToString());
+                            SPCTree.Nodes[0].Nodes["Circles:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(nodes[i].Name, nodes[i].Text);
                         }
                     }
                     break;
                 default:
                     break;
             }
+        }
+
+        private void 中值ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SmartPoints.SmartPoints.SPCV.CvFillNaN(Oringal_SpcW.pointsCloud);
+            Oringal_SpcW.Inilize();
+        }
+
+        private void xyzToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Oringal_SpcW.pointsCloud.SpcPath.Length>0)
+            {
+                
+            }
+        }
+
+        private void csvToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Oringal_SpcW.pointsCloud.SpcPath.Length > 0)
+            {
+                Oringal_SpcW.pointsCloud.SaveCsv();
+            }
+        }
+
+        private void 打开ToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            DeviceCtn = true;
+            System.Threading.ThreadStart threadts_hd_ctn= new System.Threading.ThreadStart(Device_MPHD_CTN);
+            System.Threading.Thread thread_hd_ctn = new System.Threading.Thread(threadts_hd_ctn);
+            thread_hd_ctn.Start();
+        }
+
+        private void 关闭ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeviceCtn = false;
+        }
+
+        private void Device_MPHD_CTN()
+        {
+            while (DeviceCtn)
+            {
+                megaPhaseHD.HDSensor.FireSoftwareTrigger();
+                System.Threading.Thread.Sleep(2000);
+            }
+        }
+
+        private void zRangeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Oringal_SpcW.pointsCloud.FilterZRangeID();
+            Oringal_SpcW.Inilize();
+        }
+
+        private void fillToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pointsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+        }
+        private void MatLeveling3points()
+        {
+            
         }
     }
 }

@@ -40,8 +40,8 @@ namespace SPCWTest
         #region 分割
         private void 分割点集ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            List<List<int>> ps = SmartPoints.SmartPoints.SP_Translate.FindPointsCollection(data_source, 5);
-            LineTree.Nodes["Data"].Nodes["Process"].Nodes.Add("FPC", "FPC," + "5");
+            List<List<int>> ps = SmartPoints.SmartPoints.SP_Translate.FindPointsCollection(data_source, 10);
+            LineTree.Nodes["Data"].Nodes["Process"].Nodes.Add("FPC", "FPC," + "10");
             UpdateChartData();
             foreach (var item in ps)
             {
@@ -121,6 +121,7 @@ namespace SPCWTest
             List<string> outtext;
             SmartPoints.SmartPoints.SP_Translate.ListFloatProcess(fs, LineTree.Nodes["Data"].Nodes["Process"].Nodes, out outtext);
             UpdateChartData();
+            //Temp_CalGap();
             ProcessEvent(LineTree.Nodes["Data"].Nodes["Process"].Nodes);
         }
         public float Temp_CalGap()
