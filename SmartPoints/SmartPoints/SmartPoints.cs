@@ -23,38 +23,68 @@ namespace SmartPoints
 {
     public class SmartPoints
     {
-        public class TaskXml:XmlDocument
+        public class TaskXml : XmlDocument
         {
-            public  TaskXml (string TaskName,List<string> cmdlist,List<List<string>> paramlist,Point[] points)
+            public TaskXml(string TaskName, List<string> cmdlist, List<List<string>> paramlist)
             {
-                XmlDeclaration xmlDeclaration = this.CreateXmlDeclaration("1.0","utf-8","yes");
+                XmlDeclaration xmlDeclaration = this.CreateXmlDeclaration("1.0", "utf-8", "yes");
                 this.AppendChild(xmlDeclaration);
                 XmlElement RootElement = this.CreateElement("ATask");
                 XmlAttribute TaskNameElement = this.CreateAttribute("ATaskName"); TaskNameElement.Value = TaskName;
                 RootElement.Attributes.Append(TaskNameElement);
-                XmlAttribute CmdElement = this.CreateAttribute("CMDList");CmdElement.Value = ConvertCmdStringListToString(cmdlist);
+                XmlAttribute CmdElement = this.CreateAttribute("CMDList"); CmdElement.Value = ConvertCmdStringListToString(cmdlist);
                 RootElement.Attributes.Append(CmdElement);
-                XmlAttribute ParamElement = this.CreateAttribute("ParamList");ParamElement.Value = ConvertParamListToString(paramlist);
+                XmlAttribute ParamElement = this.CreateAttribute("ParamList"); ParamElement.Value = ConvertParamListToString(paramlist);
                 RootElement.Attributes.Append(ParamElement);
-                XmlAttribute ROIPointElement = this.CreateAttribute("ROIPointList");ROIPointElement.Value = ConvertPointsToString(points);
-                RootElement.Attributes.Append(ROIPointElement);
                 this.AppendChild(RootElement);
-            }
-            public static string ConvertCmdStringListToString (List<string> cmdlist)
-            {
-                string t = "";
-                for (int i = 0; i < cmdlist.Count; i++)
+                if (cmdlist==null)
                 {
-                    if (i==cmdlist.Count-1)
-                    {
-                        t += cmdlist[i] + ",";
-                    }
-                    else
-                    {
-                        t += cmdlist[i];
-                    }
+                    this.CmdList = new List<string>();
+                    this.ParamList = new List<List<string>>();
                 }
-                return t;
+                else
+                {
+                    this.CmdList = cmdlist;
+                    this.ParamList = paramlist;
+                }
+            }
+            public void AddCmd(string cmd)
+            {
+                this.CmdList.Add(cmd);
+                this.ChildNodes[1].Attributes[1].Value = ConvertCmdStringListToString(CmdList);
+            }
+            public void AddParam(List<string> param)
+            {
+                this.ParamList.Add(param);
+                this.ChildNodes[1].Attributes[2].Value = ConvertParamListToString(ParamList);
+            }
+            public List<string> CmdList { get; set; }
+            public List<List<string>> ParamList { get; set; }
+
+
+            #region Convert
+            public static string ConvertCmdStringListToString(List<string> cmdlist)
+            {
+                if (cmdlist != null)
+                {
+                    string t = "";
+                    for (int i = 0; i < cmdlist.Count; i++)
+                    {
+                        if (i == cmdlist.Count - 1)
+                        {
+                            t += cmdlist[i] + ",";
+                        }
+                        else
+                        {
+                            t += cmdlist[i];
+                        }
+                    }
+                    return t;
+                }
+                else
+                {
+                    return null;
+                }
             }
             public static List<string> ConvertStringToCmdList(string cmd)
             {
@@ -68,26 +98,30 @@ namespace SmartPoints
             }
             public static string ConvertParamListToString(List<List<string>> paramlist)
             {
-                string t = "";
-                for (int i = 0; i < paramlist.Count; i++)
+                if (paramlist != null)
                 {
-                    for (int n = 0; n < paramlist[i].Count; n++)
+                    string t = "";
+                    for (int i = 0; i < paramlist.Count; i++)
                     {
-                        if (n==paramlist[i].Count-1)
+                        for (int n = 0; n < paramlist[i].Count; n++)
                         {
-                            t += paramlist[i][n] + "\t";
+                            if (n == paramlist[i].Count - 1)
+                            {
+                                t += paramlist[i][n] + "\t";
+                            }
+                            else
+                            {
+                                t += paramlist[i][n];
+                            }
                         }
-                        else
+                        if (i != paramlist.Count - 1)
                         {
-                            t += paramlist[i][n];
+                            t += ",";
                         }
                     }
-                    if (i!=paramlist.Count-1)
-                    {
-                        t += ",";
-                    }
+                    return t;
                 }
-                return t;
+                return null;
             }
             public static List<List<string>> ConvertStringToParamlist(string param)
             {
@@ -105,10 +139,13 @@ namespace SmartPoints
             }
             public static Point[] ConvertStringToPoints(string ps)
             {
-                Point[] points = new Point[2];
-                string[] pss= ps.Split(',');
-                points[0].X = int.Parse(pss[0]); points[0].Y = int.Parse(pss[1]);
-                points[1].X = int.Parse(pss[2]); points[1].Y = int.Parse(pss[3]);
+                string[] pss = ps.Split(',');
+                Point[] points = new Point[pss.Length / 2];
+                for (int i = 0; i < points.Length; i = i + 2)
+                {
+                    points[i].X = int.Parse(pss[2 * i]);
+                    points[i].Y = int.Parse(pss[2 * i + 1]);
+                }
                 return points;
             }
             public static string ConvertPointsToString(Point[] points)
@@ -116,6 +153,7 @@ namespace SmartPoints
                 string t = points[0].X + "," + points[0].Y + "," + points[1].X + "," + points[1].Y;
                 return t;
             }
+            #endregion
         }
         public enum FileType
         {
@@ -134,6 +172,12 @@ namespace SmartPoints
             MAGEPHASE = 2,
             COG = 3,
         }
+        public enum ProcessCmd
+        {
+           FZR=0,
+           FZRI=1,
+           FIN=2,
+        }
         public enum ProcessFunctions
         {
             FZR=0,
@@ -142,7 +186,6 @@ namespace SmartPoints
             CGC=3,
             CGCP=4,
         }
-
         public class RoiAreaPoint
         {
             public RoiAreaPoint(int w = 0, int h = 0, int x = 0, int y = 0)
@@ -207,7 +250,6 @@ namespace SmartPoints
                 //
             }
         }
-
         public class RoiAreaCircle
         {
             public RoiAreaCircle(int w = 0, int h = 0, int x = 0, int y = 0)
@@ -273,7 +315,6 @@ namespace SmartPoints
                 //
             }
         }
-
         public class RoiAreaRect
         {
             public RoiAreaRect(int w = 0, int h = 0, int x = 0, int y = 0)
@@ -337,7 +378,6 @@ namespace SmartPoints
                 //
             }
         }
-
         public class RoiAreaLine
         {
             public RoiAreaLine(int w = 0, int h = 0, int x = 0, int y = 0)
@@ -404,7 +444,6 @@ namespace SmartPoints
                 //
             }
         }
-
         public struct SpcPoints
         {
             public List<float> pointsx;
@@ -435,6 +474,7 @@ namespace SmartPoints
                 this.lines = new RoiLineList();
                 this.points = new RoiPointtList();
                 this.circles = new RoiCircletList();
+                this.ProcessXml = new TaskXml(spcnme + "Task", null, null);
             }
             /// <summary>
             /// 获取点云的RGB彩色图，24bitsBitmap
@@ -1040,6 +1080,8 @@ namespace SmartPoints
                 }
                 this.Zmax = maxf;
                 this.Zmin = minf;
+                this.ProcessXml.AddCmd( Enum.GetName(typeof(ProcessCmd),ProcessCmd.FZRI));
+                this.ProcessXml.AddParam(new List<string>() { minf.ToString() + "," + maxf });
                 return reverse;
            }
             public bool FilterZRange(float maxf, float minf,bool reverse = false)
@@ -1167,9 +1209,37 @@ namespace SmartPoints
                     }
                 }
             }
-            public List<string[]>  Proecess(List<string> processlist, List<List<string>> param)
+            public void FillNaN(int SpliterPoints)
             {
-                this.ProcessXml = new TaskXml(this.SpcName, processlist, param,new Point[] {this.TlPoint,this.RbPoint});
+                Random random = new Random();
+                List<float> h_line;
+                List<float> v_line;
+                List<float> h_matpoints = new List<float>();
+                for (int y = 0; y < this.Height; y++)
+                {
+                    this.LineClipingFloatA(new Point[] { new Point(0, y), new Point(this.Width, y) }, out h_line);
+                    SP_Translate.FindPointsCollection(h_line, SpliterPoints);
+                    SP_Translate.FillPointsCollection(h_line, "m");
+                    h_matpoints.AddRange(h_line);
+                }
+                for (int x = 0; x < this.Width; x++)
+                {
+                    this.LineClipingFloatA(new Point[] { new Point(x, 0), new Point(x, this.Height) }, out v_line);
+                    SP_Translate.FindPointsCollection(v_line, SpliterPoints);
+                    SP_Translate.FillPointsCollection(v_line, "m");
+                    for (int y = 0; y < v_line.Count; y++)
+                    {
+                        int i = y * this.Width + x;
+                        this.Spcpoints.pointsz[i] = (v_line[y] + h_matpoints[i]) / 2 + random.Next(10, 100) * 0.0001f;
+                    }
+                }
+                this.ProcessXml.AddCmd(Enum.GetName(typeof(ProcessCmd), ProcessCmd.FIN));
+                this.ProcessXml.AddParam(new List<string>() { SpliterPoints.ToString()});
+
+            }
+            public List<string[]>  SpcProecess(List<string> processlist, List<List<string>> param)
+            {
+                this.ProcessXml = new TaskXml(this.SpcName, processlist, param);
                 List<string[]> res = new List<string[]>();
                 for (int i = 0; i < processlist.Count; i++)
                 {
@@ -1241,6 +1311,9 @@ namespace SmartPoints
                                 res.Add(dds);
                             }
                             break;
+                        case "MLTP":
+                            this.MatLeveling_3points(TaskXml.ConvertStringToPoints(param[i][0] + param[i][1] + param[i][2]).ToList());
+                            break;
                         default:
                             break;
                     }
@@ -1262,7 +1335,6 @@ namespace SmartPoints
             public RoiPointtList points { get; set; }
             public RoiCircletList circles { get; set; }
             public TaskXml ProcessXml { get; set; }
-            
         }
         public class SmartPointsCloudContour
         {

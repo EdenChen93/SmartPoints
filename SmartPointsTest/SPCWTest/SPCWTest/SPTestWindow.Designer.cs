@@ -47,13 +47,13 @@
             this.dToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fillToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.中值ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SPCTree = new System.Windows.Forms.TreeView();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.SpcwPanle = new System.Windows.Forms.Panel();
             this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zRangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.levelingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pointsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SPCTree = new System.Windows.Forms.TreeView();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.SpcwPanle = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -188,7 +188,7 @@
             this.filterToolStripMenuItem,
             this.levelingToolStripMenuItem});
             this.dToolStripMenuItem.Name = "dToolStripMenuItem";
-            this.dToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.dToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.dToolStripMenuItem.Text = "3D";
             // 
             // fillToolStripMenuItem
@@ -196,16 +196,45 @@
             this.fillToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.中值ToolStripMenuItem});
             this.fillToolStripMenuItem.Name = "fillToolStripMenuItem";
-            this.fillToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fillToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.fillToolStripMenuItem.Text = "Fill";
-            this.fillToolStripMenuItem.Click += new System.EventHandler(this.fillToolStripMenuItem_Click);
             // 
             // 中值ToolStripMenuItem
             // 
             this.中值ToolStripMenuItem.Name = "中值ToolStripMenuItem";
-            this.中值ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.中值ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.中值ToolStripMenuItem.Text = "中值";
             this.中值ToolStripMenuItem.Click += new System.EventHandler(this.中值ToolStripMenuItem_Click);
+            // 
+            // filterToolStripMenuItem
+            // 
+            this.filterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.zRangeToolStripMenuItem});
+            this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
+            this.filterToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.filterToolStripMenuItem.Text = "Filter";
+            // 
+            // zRangeToolStripMenuItem
+            // 
+            this.zRangeToolStripMenuItem.Name = "zRangeToolStripMenuItem";
+            this.zRangeToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            this.zRangeToolStripMenuItem.Text = "ZRange";
+            this.zRangeToolStripMenuItem.Click += new System.EventHandler(this.zRangeToolStripMenuItem_Click);
+            // 
+            // levelingToolStripMenuItem
+            // 
+            this.levelingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pointsToolStripMenuItem});
+            this.levelingToolStripMenuItem.Name = "levelingToolStripMenuItem";
+            this.levelingToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.levelingToolStripMenuItem.Text = "Leveling";
+            // 
+            // pointsToolStripMenuItem
+            // 
+            this.pointsToolStripMenuItem.Name = "pointsToolStripMenuItem";
+            this.pointsToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.pointsToolStripMenuItem.Text = "3Points";
+            this.pointsToolStripMenuItem.Click += new System.EventHandler(this.pointsToolStripMenuItem_Click);
             // 
             // SPCTree
             // 
@@ -215,6 +244,7 @@
             this.SPCTree.Name = "SPCTree";
             this.SPCTree.Size = new System.Drawing.Size(300, 632);
             this.SPCTree.TabIndex = 1;
+            this.SPCTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.SPCTree_AfterSelect);
             // 
             // toolStrip1
             // 
@@ -232,36 +262,6 @@
             this.SpcwPanle.Name = "SpcwPanle";
             this.SpcwPanle.Size = new System.Drawing.Size(1047, 635);
             this.SpcwPanle.TabIndex = 3;
-            // 
-            // filterToolStripMenuItem
-            // 
-            this.filterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.zRangeToolStripMenuItem});
-            this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.filterToolStripMenuItem.Text = "Filter";
-            // 
-            // zRangeToolStripMenuItem
-            // 
-            this.zRangeToolStripMenuItem.Name = "zRangeToolStripMenuItem";
-            this.zRangeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.zRangeToolStripMenuItem.Text = "ZRange";
-            this.zRangeToolStripMenuItem.Click += new System.EventHandler(this.zRangeToolStripMenuItem_Click);
-            // 
-            // levelingToolStripMenuItem
-            // 
-            this.levelingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pointsToolStripMenuItem});
-            this.levelingToolStripMenuItem.Name = "levelingToolStripMenuItem";
-            this.levelingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.levelingToolStripMenuItem.Text = "Leveling";
-            // 
-            // pointsToolStripMenuItem
-            // 
-            this.pointsToolStripMenuItem.Name = "pointsToolStripMenuItem";
-            this.pointsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.pointsToolStripMenuItem.Text = "3Points";
-            this.pointsToolStripMenuItem.Click += new System.EventHandler(this.pointsToolStripMenuItem_Click);
             // 
             // SPTestWindow
             // 

@@ -13,12 +13,12 @@ namespace SPCWTest
 {
     public partial class SPTestWindow : Form
     {
+        public int SpcIndex = 0;
         public SPTestWindow()
         {
             InitializeComponent();
         }
         public static SPCwindowUI.SPCwindow Oringal_SpcW = new SPCwindow();
-        private List<SmartPoints.SmartPoints.SmartPointsCloud> DeviceDataList = new List<SmartPoints.SmartPoints.SmartPointsCloud>();
         private ChartWindowForm chartWindowForm;
         private MegaPhaseHD megaPhaseHD;
         private bool DeviceCtn = false;
@@ -31,6 +31,7 @@ namespace SPCWTest
         }
         private void AddNewSpcFromFile()
         {
+            this.SpcwPanle.Controls.Clear();
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "3D数据|*.*";
             openFileDialog.RestoreDirectory = true;
@@ -268,7 +269,18 @@ namespace SPCWTest
             i.RoiAreaLineChangeEvent += I_RoiAreaLineChangeEvent1;
             string nodename = "L" + SPCTree.Nodes[0].Nodes["Rects:"].Nodes[Oringal_SpcW.pointsCloud.rects.index].Nodes["Lines:"].Nodes.Count;
             SPCTree.Nodes[0].Nodes["Rects:"].Nodes[Oringal_SpcW.pointsCloud.rects.index].Nodes["Lines:"].Nodes.Add(nodename, nodename + ":" + i.rectangle.ToString());
-            chartWindowForm = new ChartWindowForm();
+            if (chartWindowForm == null)
+            {
+                chartWindowForm = new ChartWindowForm();
+                chartWindowForm.UpdateLineTree();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
+            }
+            if (chartWindowForm.IsDisposed)
+            {
+                chartWindowForm = new ChartWindowForm();
+                chartWindowForm.UpdateLineTree();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
+            }
             List<float> data;
             Oringal_SpcW.pointsCloud.rects[Oringal_SpcW.pointsCloud.rects.index].SPCwindow.pointsCloud.LineClipingFloatA(i.rectangle, out data);
             chartWindowForm.control_type = 1;
@@ -282,6 +294,7 @@ namespace SPCWTest
         }
         private Rectangle I_RoiAreaLineChangeEvent1(Rectangle rectangle)
         {
+            chartWindowForm.control_type = 1;
             Oringal_SpcW.pointsCloud.rects.index = SPCwindow_GotFocus();
             int i = Oringal_SpcW.pointsCloud.rects[Oringal_SpcW.pointsCloud.rects.index].SPCwindow.pointsCloud.lines.index;
             string nodename = "L" +i+":";
@@ -290,7 +303,6 @@ namespace SPCWTest
             {
                 List<float> data;
                 Oringal_SpcW.pointsCloud.rects[Oringal_SpcW.pointsCloud.rects.index].SPCwindow.pointsCloud.LineClipingFloatA(rectangle, out data);
-                
                 chartWindowForm._data_source = data;
                 chartWindowForm.data_source = data;
                 chartWindowForm.Process(data);
@@ -298,6 +310,7 @@ namespace SPCWTest
             else
             {
                 chartWindowForm = new ChartWindowForm();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
                 List<float> data;
                 Oringal_SpcW.pointsCloud.rects[Oringal_SpcW.pointsCloud.rects.index].SPCwindow.pointsCloud.LineClipingFloatA(rectangle, out data);
                 chartWindowForm._data_source = data;
@@ -408,11 +421,23 @@ namespace SPCWTest
             i.RoiAreaLineChangeEvent += I_RoiAreaLineChangeEvent2;
             string nodename = "L" + SPCTree.Nodes[0].Nodes["Circles:"].Nodes[Oringal_SpcW.pointsCloud.circles.index].Nodes["Lines:"].Nodes.Count;
             SPCTree.Nodes[0].Nodes["Circles:"].Nodes[Oringal_SpcW.pointsCloud.circles.index].Nodes["Lines:"].Nodes.Add(nodename, nodename + ":" + i.rectangle.ToString());
-            chartWindowForm= new ChartWindowForm();
+            if (chartWindowForm == null)
+            {
+                chartWindowForm = new ChartWindowForm();
+                chartWindowForm.UpdateLineTree();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
+            }
+            if (chartWindowForm.IsDisposed)
+            {
+                chartWindowForm = new ChartWindowForm();
+                chartWindowForm.UpdateLineTree();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
+            }
             List<float> data;
             Oringal_SpcW.pointsCloud.circles[Oringal_SpcW.pointsCloud.circles.index].SPCwindow.pointsCloud.LineClipingFloatA(i.rectangle, out data);
             chartWindowForm._data_source = data;
             chartWindowForm.data_source = data;
+            chartWindowForm.control_type = 2;
             chartWindowForm.control_index = Oringal_SpcW.pointsCloud.circles.index;
             chartWindowForm.line_index = Oringal_SpcW.pointsCloud.circles[Oringal_SpcW.pointsCloud.circles.index].SPCwindow.pointsCloud.lines.index;
             chartWindowForm.UpdateChartData();
@@ -421,6 +446,7 @@ namespace SPCWTest
         }
         private Rectangle I_RoiAreaLineChangeEvent2(Rectangle rectangle)
         {
+            chartWindowForm.control_type = 2;
             Oringal_SpcW.pointsCloud.circles.index = SPCwindow_GotFocus();
             int i = Oringal_SpcW.pointsCloud.circles[Oringal_SpcW.pointsCloud.circles.index].SPCwindow.pointsCloud.lines.index;
             string nodename = "L" + i+":";
@@ -436,6 +462,7 @@ namespace SPCWTest
             else
             {
                 chartWindowForm = new ChartWindowForm();
+                chartWindowForm.ProcessEvent += ChartWindowForm_ProcessEvent;
                 List<float> data;
                 Oringal_SpcW.pointsCloud.circles[Oringal_SpcW.pointsCloud.circles.index].SPCwindow.pointsCloud.LineClipingFloatA(rectangle, out data);
                 chartWindowForm.data_source = data;
@@ -497,7 +524,9 @@ namespace SPCWTest
             nodes.Add("Points:", "Points:"); 
             nodes.Add("Lines:","Lines:"); 
             nodes.Add("Rects:","Rects:"); 
-            nodes.Add("Circles:","Circles"); 
+            nodes.Add("Circles:","Circles");
+            nodes.Add("Process:", "Process");
+            nodes.Add("Output:", "Output");
         }
         private void 触发ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -606,30 +635,30 @@ namespace SPCWTest
                     }
                     break;
                 case 1:
-                    if (SPCTree.Nodes[0].Nodes["Rects:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Count>0)
+                    if (SPCTree.Nodes[0].Nodes["Rects:"].Nodes[chartWindowForm.control_index].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Count>0)
                     {
-                        SPCTree.Nodes[0].Nodes["Rects:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Clear();
+                        SPCTree.Nodes[0].Nodes["Rects:"].Nodes[chartWindowForm.control_index].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Clear();
                     }
                     else
                     {
-                        SPCTree.Nodes[0].Nodes["Rects:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Add("Process", "Process");
+                        SPCTree.Nodes[0].Nodes["Rects:"].Nodes[chartWindowForm.control_index].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Add("Process", "Process");
                         for (int i = 0; i < nodes.Count; i++)
                         {
-                            SPCTree.Nodes[0].Nodes["Rects:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(nodes[i].Name, nodes[i].Text);
+                            SPCTree.Nodes[0].Nodes["Rects:"].Nodes[chartWindowForm.control_index].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(nodes[i].Name, nodes[i].Text);
                         }
                     }
                     break;
                 case 2:
-                    if (SPCTree.Nodes[0].Nodes["Circles:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Count>0)
+                    if (SPCTree.Nodes[0].Nodes["Circles:"].Nodes[chartWindowForm.control_index].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Count>0)
                     {
-                        SPCTree.Nodes[0].Nodes["Circles:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Clear();
+                        SPCTree.Nodes[0].Nodes["Circles:"].Nodes[chartWindowForm.control_index].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Clear();
                     }
                     else
                     {
-                        SPCTree.Nodes[0].Nodes["Circles:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Add("Process", "Process");
+                        SPCTree.Nodes[0].Nodes["Circles:"].Nodes[chartWindowForm.control_index].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes.Add("Process", "Process");
                         for (int i = 0; i < nodes.Count; i++)
                         {
-                            SPCTree.Nodes[0].Nodes["Circles:"].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(nodes[i].Name, nodes[i].Text);
+                            SPCTree.Nodes[0].Nodes["Circles:"].Nodes[chartWindowForm.control_index].Nodes["Lines:"].Nodes[chartWindowForm.line_index].Nodes["Process"].Nodes.Add(nodes[i].Name, nodes[i].Text);
                         }
                     }
                     break;
@@ -637,13 +666,13 @@ namespace SPCWTest
                     break;
             }
         }
-
         private void 中值ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SmartPoints.SmartPoints.SPCV.CvFillNaN(Oringal_SpcW.pointsCloud);
-            Oringal_SpcW.Inilize();
-        }
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.FillNaN(5);
+            UpdateSpctree_ProcessInfo();
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).Inilize();
 
+        }
         private void xyzToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (Oringal_SpcW.pointsCloud.SpcPath.Length>0)
@@ -651,15 +680,25 @@ namespace SPCWTest
                 
             }
         }
-
         private void csvToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Oringal_SpcW.pointsCloud.SpcPath.Length > 0)
+
+            if (SpcIndex == 0)
             {
-                Oringal_SpcW.pointsCloud.SaveCsv();
+                if (Oringal_SpcW.pointsCloud.SpcPath.Length > 0)
+                {
+                    Oringal_SpcW.pointsCloud.SaveCsv();
+                }
+            }
+            else if (SpcIndex > 0 && SpcIndex < Oringal_SpcW.pointsCloud.rects.Count + 1)
+            {
+                 Oringal_SpcW.pointsCloud.rects[SpcIndex - 1].SPCwindow.pointsCloud.SaveCsv();
+            }
+            else
+            {
+                 Oringal_SpcW.pointsCloud.circles[SpcIndex - Oringal_SpcW.pointsCloud.circles.Count - 1].SPCwindow.pointsCloud.SaveCsv();
             }
         }
-
         private void 打开ToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             DeviceCtn = true;
@@ -667,12 +706,10 @@ namespace SPCWTest
             System.Threading.Thread thread_hd_ctn = new System.Threading.Thread(threadts_hd_ctn);
             thread_hd_ctn.Start();
         }
-
         private void 关闭ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DeviceCtn = false;
         }
-
         private void Device_MPHD_CTN()
         {
             while (DeviceCtn)
@@ -681,25 +718,66 @@ namespace SPCWTest
                 System.Threading.Thread.Sleep(2000);
             }
         }
-
         private void zRangeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Oringal_SpcW.pointsCloud.FilterZRangeID();
-            Oringal_SpcW.Inilize();
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.FilterZRangeID();
+            UpdateSpctree_ProcessInfo();
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).Inilize();
         }
-
-        private void fillToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void pointsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             
+
         }
         private void MatLeveling3points()
         {
             
+        }
+        private void SPCTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            try
+            {
+                string eps = e.Node.Parent.Name;
+                switch (eps)
+                {
+                    case "Rects:":
+                        SpcIndex = e.Node.Index+1;
+                        break;
+                    case "Circles:":
+                        SpcIndex = e.Node.Index+Oringal_SpcW.pointsCloud.rects.Count+1;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                SpcIndex = 0;
+            }
+        }
+        private void UpdateSpctree_ProcessInfo()
+        {
+            if (SpcIndex==0)
+            {
+                foreach (var item in ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.ProcessXml.CmdList)
+                {
+                    SPCTree.Nodes[SpcIndex].Nodes["Process:"].Nodes.Add(item);
+                }
+            }
+            else if(SpcIndex>0&&SpcIndex<Oringal_SpcW.pointsCloud.rects.Count+1)
+            {
+                foreach (var item in ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.ProcessXml.CmdList)
+                {
+                    SPCTree.Nodes[0].Nodes["Rects:"].Nodes[SpcIndex-1].Nodes["Process:"].Nodes.Add(item);
+                }
+            }
+            else
+            {
+                foreach (var item in ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.ProcessXml.CmdList)
+                {
+                    SPCTree.Nodes[0].Nodes["Circles:"].Nodes[SpcIndex- Oringal_SpcW.pointsCloud.rects.Count -1].Nodes["Process:"].Nodes.Add(item);
+                }
+            }
         }
     }
 }
