@@ -150,7 +150,18 @@ namespace SmartPoints
             }
             public static string ConvertPointsToString(Point[] points)
             {
-                string t = points[0].X + "," + points[0].Y + "," + points[1].X + "," + points[1].Y;
+                string t = "";
+                for (int i = 0; i < points.Length; i++)
+                {
+                    if (i==points.Length-1)
+                    {
+                        t += points[i].X + "," + points[i].Y ;
+                    }
+                    else
+                    {
+                        t += points[i].X + "," + points[i].Y + ",";
+                    }
+                }
                 return t;
             }
             #endregion
@@ -177,6 +188,7 @@ namespace SmartPoints
            FZR=0,
            FZRI=1,
            FIN=2,
+           MLP=3,
         }
         public enum ProcessFunctions
         {
@@ -449,11 +461,13 @@ namespace SmartPoints
             public List<float> pointsx;
             public List<float> pointsy;
             public List<float> pointsz;
+            public List<byte>  pointsg;
             public SpcPoints(int w, int h)
             {
                 pointsx = new List<float>(w * h);
                 pointsy = new List<float>(w * h);
                 pointsz = new List<float>(w * h);
+                pointsg = new List<byte>(w * h);
             }
         }
         public class SmartPointsCloud
@@ -692,6 +706,144 @@ namespace SmartPoints
                 string FileName = this.SpcName.Split('.')[0]+"XI_"+pitch_x+"YI_"+pitch_y+"Z0_"+Zmin+"ZI_"+ZIncrement+ ".tiff";
                 SP_Image.WriteUshortListToTiff(ss, FilePath + FileName, this.Width, this.Height);
             }
+            public void SaveMpdat()
+            {
+                    ManagedDataFrameFloat3DStruct rtv;
+                    rtv = new ManagedDataFrameFloat3DStruct();
+
+                    rtv.FrameInfo.DeviceInfo.DeviceName = "N/A";
+                    rtv.FrameInfo.DeviceInfo.InterfaceType = InterfaceType.U3;
+                    rtv.FrameInfo.DeviceInfo.XMax = -this.Spcpoints.pointsx[0];
+                    rtv.FrameInfo.DeviceInfo.YMax = this.Spcpoints.pointsy[0];
+                    rtv.FrameInfo.DeviceInfo.ZMax = Math.Abs(this.Zmax);
+                    rtv.FrameInfo.DeviceInfo.SensorBinningWidth =(uint) this.Width;
+                    rtv.FrameInfo.DeviceInfo.SensorBinningHeight = (uint) this.Height;
+                    rtv.FrameInfo.DeviceInfo.SensorBinningResolution = (uint)(this.Width*this.Height);
+                    rtv.FrameInfo.DeviceInfo.BinningPossibility = 1;
+                    rtv.FrameInfo.DeviceInfo.DeviceSerialNumber = "N/A";
+                    rtv.FrameInfo.DeviceInfo.SensorWidth = (uint)this.Width;
+                    rtv.FrameInfo.DeviceInfo.SensorHeight = (uint)this.Height;
+                    rtv.FrameInfo.DeviceInfo.MinimumSDKVersion = 0.2f;
+                    rtv.FrameInfo.DeviceInfo.FWVersion = 11.32f;
+                    rtv.FrameInfo.DeviceInfo.HWVersion = 1;
+                    rtv.FrameInfo.DeviceInfo.IsActivated = 1;
+                    rtv.FrameInfo.DeviceInfo.SensorResolution = (uint)this.Width * (uint)this.Height;
+
+                    rtv.FrameInfo.DataInfo.DataFormat = DataFormatType.FloatPointCloud;
+                    rtv.FrameInfo.DataInfo.DataNumber = 0;
+                    rtv.FrameInfo.DataInfo.DataTag = 0;
+                    rtv.FrameInfo.DataInfo.XPixResolution = (ushort)(uint)this.Width;
+                    rtv.FrameInfo.DataInfo.YPixResolution = (ushort)(uint)this.Height;
+                    rtv.FrameInfo.DataInfo.DeviceTimeStamp = 0;
+                    rtv.FrameInfo.DataInfo.PCTimeStamp = 0;
+                    rtv.FrameInfo.DataInfo.TSN.Source = TSNSourceType.Auto;
+                    rtv.FrameInfo.DataInfo.TSN.SN = 0;
+
+                    rtv.FrameInfo.BasicSettings.WorkingMode = MPSizectorS_DotNet.WorkingModeType.Standard3D;
+                    rtv.FrameInfo.BasicSettings.HoldState = 0;
+                    rtv.FrameInfo.BasicSettings.BinningState = 0;
+                    rtv.FrameInfo.BasicSettings.TriggerSource = MPSizectorS_DotNet.TriggerSourceType.HardTriggerI0;
+
+                    rtv.FrameInfo.ExposureSettings.ExposureBasicSetting.ExposureMode = ExposureModeType.Manual;
+                    rtv.FrameInfo.ExposureSettings.ExposureBasicSetting.ExposureNumber = 0;
+                    rtv.FrameInfo.ExposureSettings.ExposureBasicSetting.AutoHDRPriority = 0;
+                    rtv.FrameInfo.ExposureSettings.ExposureBasicSetting.AutoPHDRQuality = 0;
+                    rtv.FrameInfo.ExposureSettings.UserGain = 0;
+                    rtv.FrameInfo.ExposureSettings.ExposureIntensity3D_1st = 0;
+                    rtv.FrameInfo.ExposureSettings.ExposureIntensity3D_2nd = 0;
+                    rtv.FrameInfo.ExposureSettings.ExposureIntensity3D_3rd = 0;
+                    rtv.FrameInfo.ExposureSettings.ExposureIntensity2D = 0;
+
+                    rtv.FrameInfo.AutoHDRResult.IsUsingAutoHDRResult = 0;
+                    rtv.FrameInfo.AutoHDRResult.ExposureNum = 0;
+                    rtv.FrameInfo.AutoHDRResult.AutoHDR_ExposureIntensity3D_1st = 0;
+                    rtv.FrameInfo.AutoHDRResult.AutoHDR_ExposureIntensity3D_2nd = 0;
+                    rtv.FrameInfo.AutoHDRResult.AutoHDR_ExposureIntensity3D_3rd = 0;
+                    rtv.FrameInfo.AutoHDRResult.Score = 0;
+
+                    rtv.FrameInfo.ReconstructionSettings.OverExposureFilterThreshold = 255;
+                    rtv.FrameInfo.ReconstructionSettings.ValidPointThreshold0 = 0;
+                    rtv.FrameInfo.ReconstructionSettings.ValidPointThreshold1 = 0;
+                    rtv.FrameInfo.ReconstructionSettings.BurrFilterThreshold0 = 0;
+                    rtv.FrameInfo.ReconstructionSettings.BurrFilterThreshold1 = 0;
+                    rtv.FrameInfo.ReconstructionSettings.PreProcessLoopNum = 0;
+                    rtv.FrameInfo.ReconstructionSettings.PreProcessThreshold = 0;
+
+                    rtv.FrameInfo.PostProcessSettings.DataOutMode = DataOutModeType.FloatPointCloud;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrixEnableState = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R00 = 1;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R01 = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R02 = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R10 = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R11 = 1;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R12 = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R20 = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R21 = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.R22 = 1;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.T0 = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.T1 = 0;
+                    rtv.FrameInfo.PostProcessSettings.UserRTMatrix.T2 = 0;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.X0Pos = this.Spcpoints.pointsx[0];
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.XIncrement = 0.01f;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.Y0Pos =this.Spcpoints.pointsy[0];
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.YIncrement = -0.01f;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.Z0Pos =this.Zmax;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.ZIncrement = -0.005f;
+                    rtv.FrameInfo.PostProcessSettings.RangeCheckEnableState = 0;
+                    rtv.FrameInfo.PostProcessSettings.RangeCheckSetting.UXmax = 1000;
+                    rtv.FrameInfo.PostProcessSettings.RangeCheckSetting.UXmin = -1000;
+                    rtv.FrameInfo.PostProcessSettings.RangeCheckSetting.UYmax = 1000;
+                    rtv.FrameInfo.PostProcessSettings.RangeCheckSetting.UYmin = -1000;
+                    rtv.FrameInfo.PostProcessSettings.RangeCheckSetting.UZmax = 1000;
+                    rtv.FrameInfo.PostProcessSettings.RangeCheckSetting.UZmin = -1000;
+
+                    rtv.FrameInfo.GeneralSettings.AutoSleepEnableState = 0;
+                    rtv.FrameInfo.GeneralSettings.AutoSleepDelayMS = 100;
+
+                    rtv.FrameInfo.DebugInfo.ConnectionTimeMS = 100;
+                    rtv.FrameInfo.DebugInfo.InitStates = 0;
+                    rtv.FrameInfo.DebugInfo.Temp0.SensorValid = 0;
+                    rtv.FrameInfo.DebugInfo.Temp0.TempValueC = 0;
+                    rtv.FrameInfo.DebugInfo.Temp0.State = TemperatureFeedBackStateType.InRange;
+                    rtv.FrameInfo.DebugInfo.Temp1.SensorValid = 0;
+                    rtv.FrameInfo.DebugInfo.Temp1.TempValueC = 0;
+                    rtv.FrameInfo.DebugInfo.Temp1.State = TemperatureFeedBackStateType.InRange;
+                    rtv.FrameInfo.DebugInfo.Temp2.SensorValid = 0;
+                    rtv.FrameInfo.DebugInfo.Temp2.TempValueC = 0;
+                    rtv.FrameInfo.DebugInfo.Temp2.State = TemperatureFeedBackStateType.InRange;
+                    rtv.FrameInfo.DebugInfo.EXTIOInput = 0;
+                    rtv.FrameInfo.DebugInfo.TotalCaptureRetryNum = 0;
+                    rtv.FrameInfo.DebugInfo.CurrentTransferRetryNum = 0;
+                    rtv.FrameInfo.DebugInfo.TotalTransferRetryNum = 0;
+                    rtv.FrameInfo.DebugInfo.SnapCnt = 0;
+                    rtv.FrameInfo.DebugInfo.TempCore.SensorValid = 0;
+                    rtv.FrameInfo.DebugInfo.TempCore.TempValueC = 0;
+                    rtv.FrameInfo.DebugInfo.TempCore.State = TemperatureFeedBackStateType.InRange;
+
+                    uint Resolution = (uint)rtv.FrameInfo.DataInfo.XPixResolution * rtv.FrameInfo.DataInfo.YPixResolution;
+                    rtv.Data = new DataPointFloat3DStruct[Resolution];
+                for (int y = 0; y < this.Height; y++)
+                {
+                    for (int x = 0; x < this.Width; x++)
+                    {
+                        int i = x + y * this.Width;
+                        DataPointFloat3DStruct dataPoint = new DataPointFloat3DStruct();
+                        dataPoint.X = this.Spcpoints.pointsx[i];
+                        dataPoint.Y = this.Spcpoints.pointsy[i];
+                        dataPoint.Z = this.Spcpoints.pointsz[i];
+                        dataPoint.Gray = this.Spcpoints.pointsg[i];
+                        dataPoint.Mask = 8;
+                        rtv.Data[i] = dataPoint;
+                    }
+                }
+                string[] FilePaths = this.SpcPath.Split(new string[] { "\\" }, StringSplitOptions.None);
+                string FilePath = "";
+                for (int i = 0; i < FilePaths.Length - 1; i++)
+                {
+                    FilePath += FilePaths[i] + "\\";
+                }
+                rtv.SaveDataFrame(FilePath+this.SpcName.Split('.')[0]+".mpdat",this.Zmin,this.Zmax);
+            }
             public SmartPointsCloud RectangleCliping(Point TLCorner,Point RBCorner)
             {
                 int w = Math.Abs(TLCorner.X - RBCorner.X);
@@ -703,6 +855,7 @@ namespace SmartPoints
                     aspcPoints.pointsx.AddRange(this.Spcpoints.pointsx.GetRange(s + this.Width * i, w));
                     aspcPoints.pointsy.AddRange(this.Spcpoints.pointsy.GetRange(s + this.Width * i, w));
                     aspcPoints.pointsz.AddRange(this.Spcpoints.pointsz.GetRange(s + this.Width * i, w));
+                    aspcPoints.pointsg.AddRange(this.Spcpoints.pointsg.GetRange(s + this.Width * i, w));
                 }
                 float maxf, minf = 0.0f;
                 float[] gs = new float[aspcPoints.pointsz.Count];
@@ -729,6 +882,7 @@ namespace SmartPoints
                     aspcPoints.pointsx.AddRange(this.Spcpoints.pointsx.GetRange(s + this.Width * i, circle.rectangle.Width));
                     aspcPoints.pointsy.AddRange(this.Spcpoints.pointsy.GetRange(s + this.Width * i, circle.rectangle.Width));
                     aspcPoints.pointsz.AddRange(this.Spcpoints.pointsz.GetRange(s + this.Width * i, circle.rectangle.Width));
+                    aspcPoints.pointsg.AddRange(this.Spcpoints.pointsg.GetRange(s + this.Width * i, circle.rectangle.Width));
                 }
                 float maxf, minf = 0.0f;
                 float[] gs = new float[aspcPoints.pointsz.Count];
@@ -1051,7 +1205,6 @@ namespace SmartPoints
                     return parameter;
                 }
             }
-
             public bool FilterZRangeID(bool reverse=false)
             {
                 string inputstr = Interaction.InputBox("当前区间：" + this.Zmax.ToString() + "," + this.Zmin, "输入Zrange", this.Zmax + "," + this.Zmin);
@@ -1195,6 +1348,8 @@ namespace SmartPoints
                         }
                     }
                 }
+                this.ProcessXml.AddCmd(Enum.GetName(typeof(ProcessCmd), ProcessCmd.MLP));
+                this.ProcessXml.AddParam(new List<string>() { TaskXml.ConvertPointsToString(Point_List.ToArray()) });
             }
             public void FilterHistogram(List<List<float>> hist)
             {
@@ -1553,6 +1708,7 @@ namespace SmartPoints
                 float[] vs = new float[mP3D.SensorResolution];
                 float[] vsx = new float[mP3D.SensorResolution];
                 float[] vsy = new float[mP3D.SensorResolution];
+                byte[] vsg = new byte[mP3D.SensorResolution];
                 int w = (int)mP3D.SensorWidth; int h = (int)mP3D.SensorHeight;
                 for (int y = 0; y < h; y++)
                 {
@@ -1563,12 +1719,14 @@ namespace SmartPoints
                             vs[x + y * w] = mP3D.Data[x + y * w].Z;
                             vsx[x + y * w] = mP3D.Data[x + y * w].X;
                             vsy[x + y * w] = mP3D.Data[x + y * w].Y;
+                            vsg[x + y * w] = mP3D.Data[x + y * w].Gray;
                         }
                         else
                         {
                             vs[x + y * w] = float.NaN;
                             vsx[x + y * w] = mP3D.Data[x + y * w].X;
                             vsy[x + y * w] = mP3D.Data[x + y * w].Y;
+                            vsg[x + y * w] = mP3D.Data[x + y * w].Gray;
                         }
                     }
                 }
@@ -1579,6 +1737,7 @@ namespace SmartPoints
                 smartPointsCloud.Spcpoints.pointsx.AddRange(vsx);
                 smartPointsCloud.Spcpoints.pointsy.AddRange(vsy);
                 smartPointsCloud.Spcpoints.pointsz.AddRange(vs);
+                smartPointsCloud.Spcpoints.pointsg.AddRange(vsg);
                 return smartPointsCloud;
             }
             public static SmartPointsCloud GetSpcPointsFromM3dSensor(MP3DFrameManaged mP3D,string DeviceName,string path)
@@ -1586,6 +1745,7 @@ namespace SmartPoints
                 float[] vs = new float[mP3D.SensorResolution];
                 float[] vsx = new float[mP3D.SensorResolution];
                 float[] vsy = new float[mP3D.SensorResolution];
+                byte[] vsg = new byte[mP3D.SensorResolution];
                 int w = (int)mP3D.SensorWidth; int h = (int)mP3D.SensorHeight;
                 for (int y = 0; y < h; y++)
                 {
@@ -1596,12 +1756,15 @@ namespace SmartPoints
                             vs[x + y * w] = mP3D.Data[x + y * w].Z;
                             vsx[x + y * w] = mP3D.Data[x + y * w].X;
                             vsy[x + y * w] = mP3D.Data[x + y * w].Y;
+                            vsg[x + y * w] = mP3D.Data[x + y * w].Gray;
+
                         }
                         else
                         {
                             vs[x + y * w] = float.NaN;
                             vsx[x + y * w] = mP3D.Data[x + y * w].X;
                             vsy[x + y * w] = mP3D.Data[x + y * w].Y;
+                            vsg[x + y * w] = mP3D.Data[x + y * w].Gray;
                         }
                     }
                 }
@@ -1612,6 +1775,7 @@ namespace SmartPoints
                 smartPointsCloud.Spcpoints.pointsx.AddRange(vsx);
                 smartPointsCloud.Spcpoints.pointsy.AddRange(vsy);
                 smartPointsCloud.Spcpoints.pointsz.AddRange(vs);
+                smartPointsCloud.Spcpoints.pointsg.AddRange(vsg);
                 return smartPointsCloud;
             }         
             public static SmartPointsCloud GetSpcPointsFromMpdataFile(string filepath)
@@ -1621,10 +1785,14 @@ namespace SmartPoints
                 float[] DataX = GetSpcPointsArray(filepath, MPsdataindex.x, out w, out h, out maxf, out minf);
                 float[] DataY = GetSpcPointsArray(filepath, MPsdataindex.y, out w, out h, out maxf, out minf);
                 float[] DataZ = GetSpcPointsArray(filepath, MPsdataindex.z, out w, out h, out maxf, out minf);
-                SmartPointsCloud smartPointsCloud = new SmartPointsCloud(filename[filename.Length - 1], filepath, DataSource.MAGEPHASE.ToString(), w, h, maxf, minf, new Point(0, 0), new Point(0, 0));
+
+
+                SmartPointsCloud smartPointsCloud = new SmartPointsCloud(filename[filename.Length - 1], filepath, DataSource.MAGEPHASE.ToString(), w, h,maxf, minf, new Point(0, 0), new Point(0, 0));
                 smartPointsCloud.Spcpoints.pointsx.AddRange(DataX);
                 smartPointsCloud.Spcpoints.pointsy.AddRange(DataY);
                 smartPointsCloud.Spcpoints.pointsz.AddRange(DataZ);
+                byte[] gs=GetSpcPointsGrayArray(filepath, out w, out h, out maxf, out minf);
+                smartPointsCloud.Spcpoints.pointsg.AddRange(gs);
                 return smartPointsCloud;
             }
             public static SmartPointsCloud GetSpcPointsFromMSSensor(UnmanagedDataFrameUndefinedStruct unknowdataframe)
@@ -1637,7 +1805,49 @@ namespace SmartPoints
                 smartPointsCloud.Spcpoints.pointsx.AddRange(DataX);
                 smartPointsCloud.Spcpoints.pointsy.AddRange(DataY);
                 smartPointsCloud.Spcpoints.pointsz.AddRange(DataZ);
+                smartPointsCloud.Spcpoints.pointsg.AddRange(GetSpcPointsGrayArray(unknowdataframe, out w, out h, out maxf, out minf));
                 return smartPointsCloud;
+            }
+            public static byte[] GetSpcPointsGrayArray(string filepath, out int w, out int h, out float max, out float min)
+            {
+                w = 0; h = 0;
+                MPSizectorS_DotNet.UnmanagedDataFrameUndefinedStruct unknowdataframe;
+                bool IsLoad = UnmanagedDataFrameUndefinedStruct.LoadDataFrame(out unknowdataframe, filepath, out min, out max);
+                ManagedDataFrameFloat3DStruct dataframe = unknowdataframe.ToManagedFloat3D();
+                w = dataframe.FrameInfo.DataInfo.XPixResolution;
+                h = dataframe.FrameInfo.DataInfo.YPixResolution;
+                byte[] gs = new byte[dataframe.FrameInfo.DeviceInfo.SensorResolution];
+                lock (gs)
+	            {
+                for (int y = 0; y < h; y++)
+                {
+                    for (int x = 0; x < w; x++)
+                    {
+                        int i = x + y * w;
+                        gs[i] = dataframe.Data[i].Gray;
+                    }
+                }
+	            }
+                return gs;
+            }
+            public static byte[] GetSpcPointsGrayArray(UnmanagedDataFrameUndefinedStruct unknowdataframe, out int w, out int h, out float max, out float min)
+            {
+                w = 0; h = 0;
+                byte[] vsg = new byte[w * h];
+                w = unknowdataframe.FrameInfo.DataInfo.XPixResolution;
+                h = unknowdataframe.FrameInfo.DataInfo.YPixResolution;
+                max = unknowdataframe.FrameInfo.DeviceInfo.ZMax;
+                min = -max;
+                ManagedDataFrameFloat3DStruct dataframe= unknowdataframe.ToManagedFloat3D();
+                for (int y = 0; y < h; y++)
+                {
+                    for (int x = 0; x < w; x++)
+                    {
+                        int i = x + y * w;
+                        vsg[i] = dataframe.Data[i].Gray;
+                    }
+                }
+                return vsg;
             }
             public static float[] GetSpcPointsArray_Sensor(UnmanagedDataFrameUndefinedStruct unknowdataframe, MPsdataindex mPsdataindex, out int w, out int h, out float max, out float min)
             {
@@ -1819,7 +2029,7 @@ namespace SmartPoints
             {
                 w = 0; h = 0; float[] pointindex = null; byte[] rawdatabytes; byte[] indexdatabytes; int datat;
                 MPSizectorS_DotNet.UnmanagedDataFrameUndefinedStruct unknowdataframe;
-                bool IsLoad = UnmanagedDataFrameUndefinedStruct.LoadDataFrame(out unknowdataframe, filepath, out min, out max);
+                bool IsLoad = UnmanagedDataFrameUndefinedStruct.LoadDataFrame(out unknowdataframe, filepath, out min,out max);
                 if (IsLoad)
                 {
                     w = unknowdataframe.FrameInfo.DataInfo.XPixResolution;
@@ -1844,7 +2054,7 @@ namespace SmartPoints
                             GetMpdataInRangePoints(unknowdataframe, out InRanges);
                             for (int i = 0; i < pointindex.Length; i++)
                             {
-                                if (!valids[i]|!InRanges[i])
+                                if (!valids[i])//!InRanges[i]
                                 {
                                     pointindex[i] = float.NaN;
                                 }
@@ -1911,7 +2121,7 @@ namespace SmartPoints
                             GetMpdataInRangePoints(unknowdataframe, out InRanges);
                             for (int i = 0; i < pointindex.Length; i++)
                             {
-                                if (!valids[i] | !InRanges[i])
+                                if (!valids[i] )// !InRanges[i]
                                 {
                                     pointindex[i] = float.NaN;
                                 }
@@ -2098,7 +2308,8 @@ namespace SmartPoints
             }
             public static bool GetMpdataInRangePoints(UnmanagedDataFrameUndefinedStruct unmanagedDataFrameUndefinedStruct, out bool[] rawrangearray)
             {
-                float max = unmanagedDataFrameUndefinedStruct.FrameInfo.DeviceInfo.ZMax;float min = -max;
+                float max = unmanagedDataFrameUndefinedStruct.FrameInfo.DeviceInfo.ZMax;
+                float min = -max;
                 int w = unmanagedDataFrameUndefinedStruct.FrameInfo.DataInfo.XPixResolution;
                 int h = unmanagedDataFrameUndefinedStruct.FrameInfo.DataInfo.YPixResolution;
                 int l = w * h;
@@ -3448,16 +3659,31 @@ namespace SmartPoints
                         {
                              circles_res.Add(circles[c]);
                              center_res.Add(centers[c]);
+                             break;
                         } 
             }
         }
                 for (int i = 0; i < circles_res.Count; i++)
                 {
                     Random random = new Random(DateTime.Now.Millisecond);
-                    int r= random.Next(0, 255);System.Threading.Thread.Sleep(5);
-                    int g = random.Next(0, 255); System.Threading.Thread.Sleep(5);
-                    int b = random.Next(0, 255); System.Threading.Thread.Sleep(5);
+                    int r= random.Next(0, 255);System.Threading.Thread.Sleep(1);
+                    int g = random.Next(0, 255); System.Threading.Thread.Sleep(1);
+                    int b = random.Next(0, 255); System.Threading.Thread.Sleep(1);
+                    image.Draw( "Circle["+i+"]:"+circles_res[i].Size.ToString(),new Point(200,200+25*i), FontFace.HersheySimplex,1,new Rgb(255,0,0));
                     CvInvoke.Ellipse(image,circles_res[i], new MCvScalar(r, g, b),3);
+                }
+                if (circles_res.Count==0)
+                {
+                    for (int i = 0; i < circles.Count; i++)
+                    {
+                        Random random = new Random(DateTime.Now.Millisecond);
+                        int r = random.Next(0, 255); System.Threading.Thread.Sleep(1);
+                        int g = random.Next(0, 255); System.Threading.Thread.Sleep(1);
+                        int b = random.Next(0, 255); System.Threading.Thread.Sleep(1);
+                        image.Draw("Circle[" + i + "]:" + circles[i].Size.ToString(), new Point(200, 200 + 25 * i), FontFace.HersheySimplex, 1, new Rgb(255, 0, 0));
+                        CvInvoke.Ellipse(image, circles[i], new MCvScalar(r, g, b), 3);
+                    }
+
                 }
                 return image.Bitmap;
             }

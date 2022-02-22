@@ -54,6 +54,8 @@
             this.SPCTree = new System.Windows.Forms.TreeView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.SpcwPanle = new System.Windows.Forms.Panel();
+            this.tiffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mpdatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,7 +85,7 @@
             // 打开ToolStripMenuItem
             // 
             this.打开ToolStripMenuItem.Name = "打开ToolStripMenuItem";
-            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.打开ToolStripMenuItem.Text = "打开";
             this.打开ToolStripMenuItem.Click += new System.EventHandler(this.打开ToolStripMenuItem_Click);
             // 
@@ -91,22 +93,24 @@
             // 
             this.保存ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.xyzToolStripMenuItem,
-            this.csvToolStripMenuItem});
+            this.csvToolStripMenuItem,
+            this.tiffToolStripMenuItem,
+            this.mpdatToolStripMenuItem});
             this.保存ToolStripMenuItem.Name = "保存ToolStripMenuItem";
-            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.保存ToolStripMenuItem.Text = "保存";
             // 
             // xyzToolStripMenuItem
             // 
             this.xyzToolStripMenuItem.Name = "xyzToolStripMenuItem";
-            this.xyzToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
+            this.xyzToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.xyzToolStripMenuItem.Text = ".xyz";
             this.xyzToolStripMenuItem.Click += new System.EventHandler(this.xyzToolStripMenuItem_Click);
             // 
             // csvToolStripMenuItem
             // 
             this.csvToolStripMenuItem.Name = "csvToolStripMenuItem";
-            this.csvToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
+            this.csvToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.csvToolStripMenuItem.Text = ".csv";
             this.csvToolStripMenuItem.Click += new System.EventHandler(this.csvToolStripMenuItem_Click);
             // 
@@ -188,7 +192,7 @@
             this.filterToolStripMenuItem,
             this.levelingToolStripMenuItem});
             this.dToolStripMenuItem.Name = "dToolStripMenuItem";
-            this.dToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.dToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.dToolStripMenuItem.Text = "3D";
             // 
             // fillToolStripMenuItem
@@ -226,7 +230,7 @@
             this.levelingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pointsToolStripMenuItem});
             this.levelingToolStripMenuItem.Name = "levelingToolStripMenuItem";
-            this.levelingToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.levelingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.levelingToolStripMenuItem.Text = "Leveling";
             // 
             // pointsToolStripMenuItem
@@ -262,6 +266,20 @@
             this.SpcwPanle.Name = "SpcwPanle";
             this.SpcwPanle.Size = new System.Drawing.Size(1047, 635);
             this.SpcwPanle.TabIndex = 3;
+            // 
+            // tiffToolStripMenuItem
+            // 
+            this.tiffToolStripMenuItem.Name = "tiffToolStripMenuItem";
+            this.tiffToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tiffToolStripMenuItem.Text = ".tiff";
+            this.tiffToolStripMenuItem.Click += new System.EventHandler(this.tiffToolStripMenuItem_Click);
+            // 
+            // mpdatToolStripMenuItem
+            // 
+            this.mpdatToolStripMenuItem.Name = "mpdatToolStripMenuItem";
+            this.mpdatToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mpdatToolStripMenuItem.Text = ".mpdat";
+            this.mpdatToolStripMenuItem.Click += new System.EventHandler(this.mpdatToolStripMenuItem_Click);
             // 
             // SPTestWindow
             // 
@@ -311,6 +329,8 @@
         private System.Windows.Forms.ToolStripMenuItem zRangeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem levelingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pointsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tiffToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mpdatToolStripMenuItem;
         //private System.Windows.Forms.TreeView SPCTree;
     }
 }

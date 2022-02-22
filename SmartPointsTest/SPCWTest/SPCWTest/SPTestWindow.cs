@@ -726,8 +726,13 @@ namespace SPCWTest
         }
         private void pointsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-
+            List<Point> ps = new List<Point>();
+            ps.Add(((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.points[0].rectangle.Location);
+            ps.Add(((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.points[1].rectangle.Location);
+            ps.Add(((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.points[2].rectangle.Location);
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.MatLeveling_3points(ps);
+            UpdateSpctree_ProcessInfo();
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).Inilize();
         }
         private void MatLeveling3points()
         {
@@ -777,6 +782,42 @@ namespace SPCWTest
                 {
                     SPCTree.Nodes[0].Nodes["Circles:"].Nodes[SpcIndex- Oringal_SpcW.pointsCloud.rects.Count -1].Nodes["Process:"].Nodes.Add(item);
                 }
+            }
+        }
+        private void tiffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SpcIndex == 0)
+            {
+                if (Oringal_SpcW.pointsCloud.SpcPath.Length > 0)
+                {
+                    Oringal_SpcW.pointsCloud.SaveTiffUshort();
+                }
+            }
+            else if (SpcIndex > 0 && SpcIndex < Oringal_SpcW.pointsCloud.rects.Count + 1)
+            {
+                Oringal_SpcW.pointsCloud.rects[SpcIndex - 1].SPCwindow.pointsCloud.SaveTiffUshort();
+            }
+            else
+            {
+                Oringal_SpcW.pointsCloud.circles[SpcIndex - Oringal_SpcW.pointsCloud.circles.Count - 1].SPCwindow.pointsCloud.SaveTiffUshort();
+            }
+        }
+        private void mpdatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SpcIndex == 0)
+            {
+                if (Oringal_SpcW.pointsCloud.SpcPath.Length > 0)
+                {
+                    Oringal_SpcW.pointsCloud.SaveMpdat();
+                }
+            }
+            else if (SpcIndex > 0 && SpcIndex < Oringal_SpcW.pointsCloud.rects.Count + 1)
+            {
+                Oringal_SpcW.pointsCloud.rects[SpcIndex - 1].SPCwindow.pointsCloud.SaveMpdat();
+            }
+            else
+            {
+                Oringal_SpcW.pointsCloud.circles[SpcIndex - Oringal_SpcW.pointsCloud.circles.Count - 1].SPCwindow.pointsCloud.SaveMpdat();
             }
         }
     }
