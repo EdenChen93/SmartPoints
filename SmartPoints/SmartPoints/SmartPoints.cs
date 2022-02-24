@@ -713,9 +713,9 @@ namespace SmartPoints
 
                     rtv.FrameInfo.DeviceInfo.DeviceName = "N/A";
                     rtv.FrameInfo.DeviceInfo.InterfaceType = InterfaceType.U3;
-                    rtv.FrameInfo.DeviceInfo.XMax = -this.Spcpoints.pointsx[0];
-                    rtv.FrameInfo.DeviceInfo.YMax = this.Spcpoints.pointsy[0];
-                    rtv.FrameInfo.DeviceInfo.ZMax = Math.Abs(this.Zmax);
+                    rtv.FrameInfo.DeviceInfo.XMax = 32.3f;
+                    rtv.FrameInfo.DeviceInfo.YMax = 32.3f;
+                    rtv.FrameInfo.DeviceInfo.ZMax = 16.2f;
                     rtv.FrameInfo.DeviceInfo.SensorBinningWidth =(uint) this.Width;
                     rtv.FrameInfo.DeviceInfo.SensorBinningHeight = (uint) this.Height;
                     rtv.FrameInfo.DeviceInfo.SensorBinningResolution = (uint)(this.Width*this.Height);
@@ -783,12 +783,12 @@ namespace SmartPoints
                     rtv.FrameInfo.PostProcessSettings.UserRTMatrix.T0 = 0;
                     rtv.FrameInfo.PostProcessSettings.UserRTMatrix.T1 = 0;
                     rtv.FrameInfo.PostProcessSettings.UserRTMatrix.T2 = 0;
-                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.X0Pos = this.Spcpoints.pointsx[0];
-                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.XIncrement = 0.01f;
-                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.Y0Pos =this.Spcpoints.pointsy[0];
-                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.YIncrement = -0.01f;
-                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.Z0Pos =this.Zmax;
-                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.ZIncrement = -0.005f;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.X0Pos = -21.6f;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.XIncrement = 0.0167f;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.Y0Pos = -21.6f;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.YIncrement = 0.0167f;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.Z0Pos =-13;
+                    rtv.FrameInfo.PostProcessSettings.PointScaleSetting.ZIncrement = 0.0004f;
                     rtv.FrameInfo.PostProcessSettings.RangeCheckEnableState = 0;
                     rtv.FrameInfo.PostProcessSettings.RangeCheckSetting.UXmax = 1000;
                     rtv.FrameInfo.PostProcessSettings.RangeCheckSetting.UXmin = -1000;
@@ -2135,7 +2135,9 @@ namespace SmartPoints
                             {
                                 for (int x = 0; x < w; x++)
                                 {
-                                      pointindex[x + y * w] = unknowdataframe.FrameInfo.PostProcessSettings.PointScaleSetting.X0Pos + tempfzx[x + y * w] * unknowdataframe.FrameInfo.PostProcessSettings.PointScaleSetting.ZIncrement;
+                                     // pointindex[x + y * w] = unknowdataframe.FrameInfo.PostProcessSettings.PointScaleSetting.X0Pos + tempfzx[x + y * w] * unknowdataframe.FrameInfo.PostProcessSettings.PointScaleSetting.XIncrement;
+                                    pointindex[x + y * w] = -21.6f + tempfzx[x + y * w] * 0.0167f;
+
                                 }
                             }
                             break;
@@ -2147,7 +2149,9 @@ namespace SmartPoints
                             {
                                 for (int x = 0; x < w; x++)
                                 {
-                                    pointindex[x + y * w] = unknowdataframe.FrameInfo.PostProcessSettings.PointScaleSetting.Y0Pos + tempfzy[x + y * w] * unknowdataframe.FrameInfo.PostProcessSettings.PointScaleSetting.ZIncrement;
+                                    //pointindex[x + y * w] = unknowdataframe.FrameInfo.PostProcessSettings.PointScaleSetting.Y0Pos + tempfzy[x + y * w] * unknowdataframe.FrameInfo.PostProcessSettings.PointScaleSetting.YIncrement;
+                                    pointindex[x + y * w] = 21.6f - tempfzy[x + y * w] * 0.0167f;
+
                                 }
                             }
                             break;
@@ -3397,19 +3401,6 @@ namespace SmartPoints
                 mc.RemoveAll((a) => float.IsNaN(a.X));
                 return mc;
             }
-            public static CircleF[] CVFindCycle(Bitmap bitmap)
-            {
-                
-                Image<Rgb, byte> image = new Image<Rgb, byte>(bitmap);
-                Image<Rgb, byte> mat = new Image<Rgb, byte>(bitmap);
-                CvInvoke.CvtColor(image, mat, ColorConversion.Rgb2Gray);
-                CvInvoke.Canny(mat, mat, 10, 10);
-                CvInvoke.GaussianBlur(mat, mat, new Size(5,5), 0);
-                CvInvoke.Imshow("Canny", mat);
-                CvInvoke.WaitKey(0);
-                CircleF[] circles=  CvInvoke.HoughCircles(mat, HoughType.Gradient, 1,10);
-                return circles;
-            }
             public static List<Point[]> CvGetContoursInPoints(Bitmap bitmap,int filter=1)
             {
                 Image<Rgb, byte> image = new Image<Rgb, byte>(bitmap);
@@ -3687,6 +3678,62 @@ namespace SmartPoints
                 }
                 return image.Bitmap;
             }
+            public static List<RectangleF> CvFindCircle(Bitmap rsc)
+            {
+                Image<Rgb, byte> image = new Image<Rgb, byte>(rsc);
+                Image<Rgb, byte> mat = new Image<Rgb, byte>(rsc.Width, rsc.Height);
+                Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
+                CvInvoke.CvtColor(image, mat, ColorConversion.Rgb2Gray);
+                CvInvoke.FindContours(mat, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
+                List<Point> centers = new List<Point>();
+                List<Point> center_res = new List<Point>();
+                List<RotatedRect> circles = new List<RotatedRect>();
+                List<RotatedRect> circles_res = new List<RotatedRect>();
+                for (int i = 0; i < contours.Size; i++)
+                {
+                    if (contours[i].Size > 155)
+                    {
+                        RotatedRect circle = CvInvoke.FitEllipse(contours[i]);
+                        Point center = new Point((int)Math.Round(circle.Center.X), (int)Math.Round(circle.Center.Y));
+                        centers.Add(center);
+                        circles.Add(circle);
+                    }
+                }
+                for (int c = 0; c < centers.Count; c++)
+                {
+                    for (int i = 0; i < centers.Count; i++)
+                    {
+                        if (((int)Math.Round(Math.Sqrt((centers[c].X - centers[i].X) * (centers[c].X - centers[i].X) + (centers[c].Y - centers[i].Y) * (centers[c].Y - centers[i].Y))) < 125) && i != c)
+                        {
+                            circles_res.Add(circles[c]);
+                            center_res.Add(centers[c]);
+                            break;
+                        }
+                    }
+                }
+                if (circles_res.Count == 0)
+                {
+                    List<RectangleF> cs = new List<RectangleF>();
+                    foreach (var item in circles)
+                    {
+                        RectangleF rectangle = new RectangleF(item.Center, item.Size);
+                        cs.Add(rectangle);
+                    }
+                    return cs;
+
+                }
+                else
+                {
+                    List<RectangleF> cs = new List<RectangleF>();
+                    foreach (var item in circles_res)
+                    {
+                        RectangleF rectangle = new RectangleF(item.Center, item.Size);
+                        cs.Add(rectangle);
+                    }
+                    return cs;
+                }
+            }
+
             public static void CvFillNaN(SmartPointsCloud pointsCloud)
             {
                 Random random=new Random();

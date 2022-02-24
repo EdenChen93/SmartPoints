@@ -35,6 +35,8 @@
             this.保存ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xyzToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tiffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mpdatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.设备ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.megaPhaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,8 +56,8 @@
             this.SPCTree = new System.Windows.Forms.TreeView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.SpcwPanle = new System.Windows.Forms.Panel();
-            this.tiffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mpdatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.找拟合圆ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,7 +87,7 @@
             // 打开ToolStripMenuItem
             // 
             this.打开ToolStripMenuItem.Name = "打开ToolStripMenuItem";
-            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.打开ToolStripMenuItem.Text = "打开";
             this.打开ToolStripMenuItem.Click += new System.EventHandler(this.打开ToolStripMenuItem_Click);
             // 
@@ -97,22 +99,36 @@
             this.tiffToolStripMenuItem,
             this.mpdatToolStripMenuItem});
             this.保存ToolStripMenuItem.Name = "保存ToolStripMenuItem";
-            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.保存ToolStripMenuItem.Text = "保存";
             // 
             // xyzToolStripMenuItem
             // 
             this.xyzToolStripMenuItem.Name = "xyzToolStripMenuItem";
-            this.xyzToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.xyzToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.xyzToolStripMenuItem.Text = ".xyz";
             this.xyzToolStripMenuItem.Click += new System.EventHandler(this.xyzToolStripMenuItem_Click);
             // 
             // csvToolStripMenuItem
             // 
             this.csvToolStripMenuItem.Name = "csvToolStripMenuItem";
-            this.csvToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.csvToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.csvToolStripMenuItem.Text = ".csv";
             this.csvToolStripMenuItem.Click += new System.EventHandler(this.csvToolStripMenuItem_Click);
+            // 
+            // tiffToolStripMenuItem
+            // 
+            this.tiffToolStripMenuItem.Name = "tiffToolStripMenuItem";
+            this.tiffToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.tiffToolStripMenuItem.Text = ".tiff";
+            this.tiffToolStripMenuItem.Click += new System.EventHandler(this.tiffToolStripMenuItem_Click);
+            // 
+            // mpdatToolStripMenuItem
+            // 
+            this.mpdatToolStripMenuItem.Name = "mpdatToolStripMenuItem";
+            this.mpdatToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.mpdatToolStripMenuItem.Text = ".mpdat";
+            this.mpdatToolStripMenuItem.Click += new System.EventHandler(this.mpdatToolStripMenuItem_Click);
             // 
             // 设备ToolStripMenuItem
             // 
@@ -180,7 +196,8 @@
             // 工具ToolStripMenuItem
             // 
             this.工具ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dToolStripMenuItem});
+            this.dToolStripMenuItem,
+            this.dToolStripMenuItem1});
             this.工具ToolStripMenuItem.Name = "工具ToolStripMenuItem";
             this.工具ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
             this.工具ToolStripMenuItem.Text = "工具";
@@ -230,7 +247,7 @@
             this.levelingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pointsToolStripMenuItem});
             this.levelingToolStripMenuItem.Name = "levelingToolStripMenuItem";
-            this.levelingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.levelingToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.levelingToolStripMenuItem.Text = "Leveling";
             // 
             // pointsToolStripMenuItem
@@ -267,19 +284,20 @@
             this.SpcwPanle.Size = new System.Drawing.Size(1047, 635);
             this.SpcwPanle.TabIndex = 3;
             // 
-            // tiffToolStripMenuItem
+            // dToolStripMenuItem1
             // 
-            this.tiffToolStripMenuItem.Name = "tiffToolStripMenuItem";
-            this.tiffToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.tiffToolStripMenuItem.Text = ".tiff";
-            this.tiffToolStripMenuItem.Click += new System.EventHandler(this.tiffToolStripMenuItem_Click);
+            this.dToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.找拟合圆ToolStripMenuItem});
+            this.dToolStripMenuItem1.Name = "dToolStripMenuItem1";
+            this.dToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.dToolStripMenuItem1.Text = "2D";
             // 
-            // mpdatToolStripMenuItem
+            // 找拟合圆ToolStripMenuItem
             // 
-            this.mpdatToolStripMenuItem.Name = "mpdatToolStripMenuItem";
-            this.mpdatToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.mpdatToolStripMenuItem.Text = ".mpdat";
-            this.mpdatToolStripMenuItem.Click += new System.EventHandler(this.mpdatToolStripMenuItem_Click);
+            this.找拟合圆ToolStripMenuItem.Name = "找拟合圆ToolStripMenuItem";
+            this.找拟合圆ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.找拟合圆ToolStripMenuItem.Text = "找拟合圆";
+            this.找拟合圆ToolStripMenuItem.Click += new System.EventHandler(this.找拟合圆ToolStripMenuItem_Click);
             // 
             // SPTestWindow
             // 
@@ -331,6 +349,8 @@
         private System.Windows.Forms.ToolStripMenuItem pointsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tiffToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mpdatToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem 找拟合圆ToolStripMenuItem;
         //private System.Windows.Forms.TreeView SPCTree;
     }
 }

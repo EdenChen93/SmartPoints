@@ -43,6 +43,7 @@
             this.三点校平ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.视图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.灰度图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.融合ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +72,7 @@
             this.mpdatToolStripMenuItem,
             this.md3mToolStripMenuItem});
             this.打开ToolStripMenuItem.Name = "打开ToolStripMenuItem";
-            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.打开ToolStripMenuItem.Text = "打开";
             this.打开ToolStripMenuItem.Click += new System.EventHandler(this.打开ToolStripMenuItem_Click);
             // 
@@ -111,7 +112,7 @@
             // 设置色谱范围ToolStripMenuItem
             // 
             this.设置色谱范围ToolStripMenuItem.Name = "设置色谱范围ToolStripMenuItem";
-            this.设置色谱范围ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.设置色谱范围ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.设置色谱范围ToolStripMenuItem.Text = "范围过滤";
             this.设置色谱范围ToolStripMenuItem.Click += new System.EventHandler(this.设置色谱范围ToolStripMenuItem_Click);
             // 
@@ -127,21 +128,22 @@
             // 腐蚀ToolStripMenuItem
             // 
             this.腐蚀ToolStripMenuItem.Name = "腐蚀ToolStripMenuItem";
-            this.腐蚀ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.腐蚀ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.腐蚀ToolStripMenuItem.Text = "腐蚀";
             this.腐蚀ToolStripMenuItem.Click += new System.EventHandler(this.腐蚀ToolStripMenuItem_Click);
             // 
             // 找圆ToolStripMenuItem
             // 
             this.找圆ToolStripMenuItem.Name = "找圆ToolStripMenuItem";
-            this.找圆ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.找圆ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.找圆ToolStripMenuItem.Text = "找圆";
             this.找圆ToolStripMenuItem.Click += new System.EventHandler(this.找圆ToolStripMenuItem_Click);
             // 
             // 修改ToolStripMenuItem
             // 
             this.修改ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.三点校平ToolStripMenuItem});
+            this.三点校平ToolStripMenuItem,
+            this.融合ToolStripMenuItem});
             this.修改ToolStripMenuItem.Name = "修改ToolStripMenuItem";
             this.修改ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.修改ToolStripMenuItem.Text = "修改";
@@ -164,9 +166,16 @@
             // 灰度图ToolStripMenuItem
             // 
             this.灰度图ToolStripMenuItem.Name = "灰度图ToolStripMenuItem";
-            this.灰度图ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.灰度图ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.灰度图ToolStripMenuItem.Text = "灰度图";
             this.灰度图ToolStripMenuItem.Click += new System.EventHandler(this.灰度图ToolStripMenuItem_Click);
+            // 
+            // 融合ToolStripMenuItem
+            // 
+            this.融合ToolStripMenuItem.Name = "融合ToolStripMenuItem";
+            this.融合ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.融合ToolStripMenuItem.Text = "融合";
+            this.融合ToolStripMenuItem.Click += new System.EventHandler(this.融合ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -201,6 +210,7 @@
         private System.Windows.Forms.ToolStripMenuItem md3mToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 视图ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 灰度图ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 融合ToolStripMenuItem;
     }
 }
 

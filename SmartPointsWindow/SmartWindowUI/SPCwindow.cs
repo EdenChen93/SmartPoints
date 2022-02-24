@@ -292,6 +292,7 @@ namespace SPCwindowUI
                     FlushSPCW();
                     break;
                 case Keys.G:
+                    this.SPCWPictureBox.Image = this.pointsCloud.GetBitmapGray();
                     break;
                 case Keys.H:
                     break;

@@ -730,6 +730,12 @@ namespace SPCWTest
             ps.Add(((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.points[0].rectangle.Location);
             ps.Add(((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.points[1].rectangle.Location);
             ps.Add(((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.points[2].rectangle.Location);
+
+            //MatProcessWindow matProcessWindow = new MatProcessWindow();
+            //matProcessWindow.cmd = SmartPoints.SmartPoints.ProcessCmd.MLP;
+            //matProcessWindow.MLP_UIUpdatei(((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud);
+            //matProcessWindow.ShowDialog();
+
             ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.MatLeveling_3points(ps);
             UpdateSpctree_ProcessInfo();
             ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).Inilize();
@@ -784,6 +790,21 @@ namespace SPCWTest
                 }
             }
         }
+        private void UpdateSpctree_OutputInfo(TreeNode node)
+        {
+            if (SpcIndex == 0)
+            {
+                    SPCTree.Nodes[SpcIndex].Nodes["Output:"].Nodes.Add(node);
+            }
+            else if (SpcIndex > 0 && SpcIndex < Oringal_SpcW.pointsCloud.rects.Count + 1)
+            {
+                    SPCTree.Nodes[0].Nodes["Rects:"].Nodes[SpcIndex - 1].Nodes["Output:"].Nodes.Add(node);
+            }
+            else
+            {
+                    SPCTree.Nodes[0].Nodes["Circles:"].Nodes[SpcIndex - Oringal_SpcW.pointsCloud.rects.Count - 1].Nodes["Output:"].Nodes.Add(node);
+            }
+        }
         private void tiffToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SpcIndex == 0)
@@ -817,8 +838,22 @@ namespace SPCWTest
             }
             else
             {
-                Oringal_SpcW.pointsCloud.circles[SpcIndex - Oringal_SpcW.pointsCloud.circles.Count - 1].SPCwindow.pointsCloud.SaveMpdat();
+                Oringal_SpcW.pointsCloud.circles[SpcIndex - Oringal_SpcW.pointsCloud.rects.Count - 1].SPCwindow.pointsCloud.SaveMpdat();
             }
+        }
+
+        private void 找拟合圆ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<RectangleF> circlelist= SmartPoints.SmartPoints.SPCV.CvFindCircle((Bitmap)((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).SPCWPictureBox.Image);
+            Bitmap cbitmap = (Bitmap)((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).SPCWPictureBox.Image;
+            Graphics graphics = Graphics.FromImage(cbitmap);
+            for (int i = 0; i < circlelist.Count; i++)
+            {
+                TreeNode node = new TreeNode(circlelist[i].Location.ToString() + '/' + circlelist[i].Size);
+                graphics.DrawEllipse(new Pen(new SolidBrush(Color.Red), 2),new RectangleF(new PointF( circlelist[i].X-circlelist[i].Width/2,circlelist[i].Y-circlelist[i].Height/2),circlelist[i].Size));
+                UpdateSpctree_OutputInfo(node);
+            }
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).SPCWPictureBox.Image = cbitmap;
         }
     }
 }
