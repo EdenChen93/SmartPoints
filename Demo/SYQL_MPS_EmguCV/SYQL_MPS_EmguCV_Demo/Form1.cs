@@ -171,9 +171,12 @@ namespace SYQL_MPS_EmguCV_Demo
                     {
                         float v0 = sPCwindows[0].pointsCloud.Spcpoints.pointsz[x + y * sPCwindow.pointsCloud.Width];
                         float v1 = sPCwindows[1].pointsCloud.Spcpoints.pointsz[x + y * sPCwindow.pointsCloud.Width];
-                        if (Math.Abs(v0-v1)>0.01)
+                        float v2 = sPCwindows[2].pointsCloud.Spcpoints.pointsz[x + y * sPCwindow.pointsCloud.Width];
+
+                        if (Math.Abs(v0-v1)>0.01 | Math.Abs(v0 - v2) > 0.01)
                         {
                             float v=  Math.Min(v0, v1);
+                            v = Math.Min(v, v2);
                             if (float.IsNaN(v))
                             {
                                 sPCwindows[0].pointsCloud.Spcpoints.pointsz[x + y * sPCwindow.pointsCloud.Width] = float.NaN;

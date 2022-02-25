@@ -765,7 +765,7 @@ namespace SPCwindowUI
                 case GrapTools.GetInfo:
                     if (GrapOn)
                     {
-                        GetInfoEvent(this.pointsCloud.GetValue(Mpoint.X, Mpoint.Y)[2].ToString());
+                        GetInfoEvent(this.pointsCloud.GetValue(Mpoint.X, Mpoint.Y)[2].ToString()+Mpoint.ToString());
                     }
                     break;
                 default:

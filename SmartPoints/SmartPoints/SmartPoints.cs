@@ -873,6 +873,38 @@ namespace SmartPoints
                 acloud.RbPoint = RBCorner;
                 return acloud;
             }
+            public SmartPointsCloud RectangleCliping(Rectangle rectangle)
+            {
+                Point TLCorner = rectangle.Location;
+                Point RBCorner = new Point(TLCorner.X + rectangle.Width, TLCorner.Y + rectangle.Height);
+                int w = Math.Abs(TLCorner.X - RBCorner.X);
+                int h = Math.Abs(TLCorner.Y - RBCorner.Y);
+                int s = this.Width * (TLCorner.Y) + TLCorner.X;
+                SpcPoints aspcPoints = new SpcPoints(w, h);
+                for (int i = 0; i < h; i++)
+                {
+                    aspcPoints.pointsx.AddRange(this.Spcpoints.pointsx.GetRange(s + this.Width * i, w));
+                    aspcPoints.pointsy.AddRange(this.Spcpoints.pointsy.GetRange(s + this.Width * i, w));
+                    aspcPoints.pointsz.AddRange(this.Spcpoints.pointsz.GetRange(s + this.Width * i, w));
+                    aspcPoints.pointsg.AddRange(this.Spcpoints.pointsg.GetRange(s + this.Width * i, w));
+                }
+                float maxf, minf = 0.0f;
+                float[] gs = new float[aspcPoints.pointsz.Count];
+                aspcPoints.pointsz.CopyTo(gs);
+                List<float> ds = gs.ToList();
+                ds.RemoveAll((a) => Single.IsNaN(a));
+                ds.RemoveAll((a) => Single.IsNegativeInfinity(a));
+                ds.RemoveAll((a) => Single.IsPositiveInfinity(a));
+                ds.Sort();
+                maxf = ds[ds.Count - 5];
+                minf = ds[5];
+                SmartPointsCloud acloud = new SmartPointsCloud(this.SpcName, this.SpcPath, DataSource.MAGEPHASE.ToString(), w, h, maxf, minf, new Point(0, 0), new Point(0, 0));
+                acloud.Spcpoints = aspcPoints;
+                acloud.TlPoint = TLCorner;
+                acloud.RbPoint = RBCorner;
+                return acloud;
+            }
+
             public SmartPointsCloud CircleCliping(RoiAreaCircle circle)
             {
                 SpcPoints aspcPoints = new SpcPoints(circle.rectangle.Width, circle.rectangle.Height);
@@ -1751,7 +1783,7 @@ namespace SmartPoints
                 {
                     for (int x = 0; x < w; x++)
                     {
-                        if (mP3D.Data[x + y * w].Z > -mP3D.ZMax && mP3D.Data[x + y * w].Z < mP3D.ZMax && mP3D.Data[x + y * w].Mask == 0 && mP3D.Data[x + y * w].Gray > 33)//
+                        if (mP3D.Data[x + y * w].Z > -mP3D.ZMax && mP3D.Data[x + y * w].Z < mP3D.ZMax && mP3D.Data[x + y * w].Mask == 0)//&& mP3D.Data[x + y * w].Gray > 33
                         {
                             vs[x + y * w] = mP3D.Data[x + y * w].Z;
                             vsx[x + y * w] = mP3D.Data[x + y * w].X;
@@ -3532,6 +3564,50 @@ namespace SmartPoints
                 }
                 return null;
             }
+            public static VectorOfPoint CvGetMaxContour(Bitmap rsc)
+            {
+                Bitmap dst = new Bitmap(rsc.Width, rsc.Height);
+                Image<Rgb, byte> image = new Image<Rgb, byte>(rsc);
+                Image<Rgb, byte> mat = new Image<Rgb, byte>(rsc);
+                Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
+                CvInvoke.CvtColor(image, mat, ColorConversion.Rgb2Gray);
+                CvInvoke.FindContours(mat, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
+                List<int> s = new List<int>();
+                for (int i = 0; i < contours.Size; i++)
+                {
+                    s.Add(contours[i].Size);
+                }
+                return contours[ s.IndexOf(s.Max())];
+            }
+            public static Bitmap CvGetBlob(Bitmap rsc)
+            {
+                Bitmap dst = new Bitmap(rsc.Width, rsc.Height);
+                Image<Rgb, byte> image = new Image<Rgb, byte>(rsc);
+                Emgu.CV.Features2D.SimpleBlobDetectorParams simpleBlobDetectorParams = new Emgu.CV.Features2D.SimpleBlobDetectorParams();
+                simpleBlobDetectorParams.FilterByArea = true;
+                simpleBlobDetectorParams.MinArea = 200;
+                simpleBlobDetectorParams.MaxArea = 800;
+                simpleBlobDetectorParams.MaxThreshold = 256;
+                simpleBlobDetectorParams.MinThreshold = 0;
+                simpleBlobDetectorParams.FilterByCircularity = true;
+                simpleBlobDetectorParams.MaxCircularity = 1.0f;
+                simpleBlobDetectorParams.MinCircularity = 0.3f;
+                simpleBlobDetectorParams.FilterByConvexity = true;
+                simpleBlobDetectorParams.MaxConvexity = 1.0f;
+                simpleBlobDetectorParams.MinConvexity = 0.1f;
+                simpleBlobDetectorParams.FilterByColor = false;
+                Emgu.CV.Features2D.SimpleBlobDetector simpleBlobDetector = new Emgu.CV.Features2D.SimpleBlobDetector(simpleBlobDetectorParams);
+                MKeyPoint[] mKeyPoints= simpleBlobDetector.Detect(image);
+                Random random = new Random(DateTime.Now.Millisecond);
+                for (int i = 0; i < mKeyPoints.Length; i++)
+                {
+                    int r=random.Next(0, 255);System.Threading.Thread.Sleep(2); int g = random.Next(0, 255); System.Threading.Thread.Sleep(2); int b = random.Next(0, 255);
+                    Rectangle rectangle = new Rectangle((int)(mKeyPoints[i].Point.X - mKeyPoints[i].Size / 2), (int)(mKeyPoints[i].Point.Y - mKeyPoints[i].Size / 2), (int)mKeyPoints[i].Size, (int)mKeyPoints[i].Size);
+                    image.Draw(rectangle, new Rgb(r, g, b));
+                    image.Draw(mKeyPoints[i].Point.ToString(), rectangle.Location, FontFace.HersheySimplex,0.6,new Rgb(255,0,0 ));
+                }
+                return image.Bitmap;
+            }
             public static Bitmap CvGetContourAreaAll(Bitmap rsc)
             {
                 Bitmap dst = new Bitmap(rsc.Width, rsc.Height);
@@ -3556,48 +3632,52 @@ namespace SmartPoints
             }
             public static SmartPointsCloud CvGetNewSPCFromContour(SmartPointsCloud pointsCloud,VectorOfPoint c)
             {
-                    List<Point> PointsInContour = new List<Point>();
-                    Point[] contourpoints = c.ToArray();
-                    List<int> xlist = new List<int>();
-                    List<int> ylist = new List<int>();
-                    foreach (var item in contourpoints)
-                    {
-                        xlist.Add(item.X);
-                        ylist.Add(item.Y);
-                    }
-                    Point tl = new Point(xlist.Min(), ylist.Min());
-                    Point rb = new Point(xlist.Max(), ylist.Max());
-                    int w = rb.X - tl.X;
-                    int h = rb.Y - tl.Y;
-                SmartPointsCloud dst = new SmartPointsCloud(pointsCloud.SpcName + "NewSpc", pointsCloud.SpcPath, "SmartPoints", w, h, pointsCloud.Zmax, pointsCloud.Zmin, tl, rb);
-                unsafe
-                {
-                    for (int y = 0; y < h; y++)
-                    {
-                        for (int x = 0; x < w; x++)
-                        {
-                            Point apoint = new Point(tl.X + x, tl.Y + y);
-                            
-                            double d = CvInvoke.PointPolygonTest(new VectorOfPoint(contourpoints), apoint, false);
-                            if (d > 0)
-                            {
-                                PointsInContour.Add(apoint);
-                                float[] value = pointsCloud.GetValue(apoint.X, apoint.Y);
-                                dst.Spcpoints.pointsx.Add(value[0]);
-                                dst.Spcpoints.pointsy.Add(value[1]);
-                                dst.Spcpoints.pointsz.Add(value[2]);
-                            }
-                            else
-                            {
-                                dst.Spcpoints.pointsx.Add(x);
-                                dst.Spcpoints.pointsy.Add(y);
-                                dst.Spcpoints.pointsz.Add(float.NaN);
-                            }
-                        }
-                    }
-                    return dst;
+                    RotatedRect rotatedRect= CvInvoke.MinAreaRect(c);
+                    Rectangle rectangle = rotatedRect.MinAreaRect();
+                    return pointsCloud.RectangleCliping(rectangle);    
 
-                }
+                //    List<Point> PointsInContour = new List<Point>();
+                //    Point[] contourpoints = c.ToArray();
+                //    List<int> xlist = new List<int>();
+                //    List<int> ylist = new List<int>();
+                //    foreach (var item in contourpoints)
+                //    {
+                //        xlist.Add(item.X);
+                //        ylist.Add(item.Y);
+                //    }
+                //    Point tl = new Point(xlist.Min(), ylist.Min());
+                //    Point rb = new Point(xlist.Max(), ylist.Max());
+                //    int w = rb.X - tl.X;
+                //    int h = rb.Y - tl.Y;
+                //SmartPointsCloud dst = new SmartPointsCloud(pointsCloud.SpcName + "NewSpc", pointsCloud.SpcPath, "SmartPoints", w, h, pointsCloud.Zmax, pointsCloud.Zmin, tl, rb);
+                //unsafe
+                //{
+                //    for (int y = 0; y < h; y++)
+                //    {
+                //        for (int x = 0; x < w; x++)
+                //        {
+                //            Point apoint = new Point(tl.X + x, tl.Y + y);
+                            
+                //            double d = CvInvoke.PointPolygonTest(new VectorOfPoint(contourpoints), apoint, false);
+                //            if (d > 0)
+                //            {
+                //                PointsInContour.Add(apoint);
+                //                float[] value = pointsCloud.GetValue(apoint.X, apoint.Y);
+                //                dst.Spcpoints.pointsx.Add(value[0]);
+                //                dst.Spcpoints.pointsy.Add(value[1]);
+                //                dst.Spcpoints.pointsz.Add(value[2]);
+                //            }
+                //            else
+                //            {
+                //                dst.Spcpoints.pointsx.Add(x);
+                //                dst.Spcpoints.pointsy.Add(y);
+                //                dst.Spcpoints.pointsz.Add(float.NaN);
+                //            }
+                //        }
+                //    }
+                //    return dst;
+
+                //}
             }
             public static SmartPointsCloud CvErode(SmartPointsCloud pointsCloud)
             {
