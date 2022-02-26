@@ -33,6 +33,7 @@ namespace SPCWTest
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.processToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.工具ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.分割点集ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.插补NANToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,10 +48,19 @@ namespace SPCWTest
             this.指定高度值ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.过滤ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.噪音峰ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.视图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.图表类型ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pointsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.y轴比例ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.自动ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.LineTree = new System.Windows.Forms.TreeView();
-            this.processToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.测量ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.点点ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.两点ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
@@ -59,7 +69,9 @@ namespace SPCWTest
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件ToolStripMenuItem,
-            this.工具ToolStripMenuItem});
+            this.工具ToolStripMenuItem,
+            this.视图ToolStripMenuItem,
+            this.测量ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1150, 25);
@@ -73,6 +85,13 @@ namespace SPCWTest
             this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
             this.文件ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
             this.文件ToolStripMenuItem.Text = "文件";
+            // 
+            // processToolStripMenuItem
+            // 
+            this.processToolStripMenuItem.Name = "processToolStripMenuItem";
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.processToolStripMenuItem.Text = "Process";
+            this.processToolStripMenuItem.Click += new System.EventHandler(this.processToolStripMenuItem_Click);
             // 
             // 工具ToolStripMenuItem
             // 
@@ -185,6 +204,61 @@ namespace SPCWTest
             this.噪音峰ToolStripMenuItem.Text = "噪音峰";
             this.噪音峰ToolStripMenuItem.Click += new System.EventHandler(this.噪音峰ToolStripMenuItem_Click);
             // 
+            // 视图ToolStripMenuItem
+            // 
+            this.视图ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.图表类型ToolStripMenuItem,
+            this.y轴比例ToolStripMenuItem});
+            this.视图ToolStripMenuItem.Name = "视图ToolStripMenuItem";
+            this.视图ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.视图ToolStripMenuItem.Text = "视图";
+            // 
+            // 图表类型ToolStripMenuItem
+            // 
+            this.图表类型ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lineToolStripMenuItem,
+            this.pointsToolStripMenuItem,
+            this.splineToolStripMenuItem});
+            this.图表类型ToolStripMenuItem.Name = "图表类型ToolStripMenuItem";
+            this.图表类型ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.图表类型ToolStripMenuItem.Text = "图表类型";
+            // 
+            // lineToolStripMenuItem
+            // 
+            this.lineToolStripMenuItem.Name = "lineToolStripMenuItem";
+            this.lineToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.lineToolStripMenuItem.Text = "Line";
+            this.lineToolStripMenuItem.Click += new System.EventHandler(this.lineToolStripMenuItem_Click);
+            // 
+            // pointsToolStripMenuItem
+            // 
+            this.pointsToolStripMenuItem.Name = "pointsToolStripMenuItem";
+            this.pointsToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.pointsToolStripMenuItem.Text = "Points";
+            this.pointsToolStripMenuItem.Click += new System.EventHandler(this.pointsToolStripMenuItem_Click);
+            // 
+            // splineToolStripMenuItem
+            // 
+            this.splineToolStripMenuItem.Name = "splineToolStripMenuItem";
+            this.splineToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.splineToolStripMenuItem.Text = "Spline";
+            this.splineToolStripMenuItem.Click += new System.EventHandler(this.splineToolStripMenuItem_Click);
+            // 
+            // y轴比例ToolStripMenuItem
+            // 
+            this.y轴比例ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.自动ToolStripMenuItem});
+            this.y轴比例ToolStripMenuItem.Name = "y轴比例ToolStripMenuItem";
+            this.y轴比例ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.y轴比例ToolStripMenuItem.Text = "Y轴比例";
+            // 
+            // 自动ToolStripMenuItem
+            // 
+            this.自动ToolStripMenuItem.Name = "自动ToolStripMenuItem";
+            this.自动ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.自动ToolStripMenuItem.Text = "自动";
+            this.自动ToolStripMenuItem.Click += new System.EventHandler(this.自动ToolStripMenuItem_Click);
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
@@ -207,6 +281,8 @@ namespace SPCWTest
             this.chart1.Size = new System.Drawing.Size(930, 458);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
+            this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseMove);
+            this.chart1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseUp);
             // 
             // LineTree
             // 
@@ -216,12 +292,28 @@ namespace SPCWTest
             this.LineTree.Size = new System.Drawing.Size(221, 458);
             this.LineTree.TabIndex = 3;
             // 
-            // processToolStripMenuItem
+            // 测量ToolStripMenuItem
             // 
-            this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.processToolStripMenuItem.Text = "Process";
-            this.processToolStripMenuItem.Click += new System.EventHandler(this.processToolStripMenuItem_Click);
+            this.测量ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.点点ToolStripMenuItem});
+            this.测量ToolStripMenuItem.Name = "测量ToolStripMenuItem";
+            this.测量ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.测量ToolStripMenuItem.Text = "测量";
+            // 
+            // 点点ToolStripMenuItem
+            // 
+            this.点点ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.两点ToolStripMenuItem1});
+            this.点点ToolStripMenuItem.Name = "点点ToolStripMenuItem";
+            this.点点ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.点点ToolStripMenuItem.Text = "点-点";
+            // 
+            // 两点ToolStripMenuItem1
+            // 
+            this.两点ToolStripMenuItem1.Name = "两点ToolStripMenuItem1";
+            this.两点ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.两点ToolStripMenuItem1.Text = "两点";
+            this.两点ToolStripMenuItem1.Click += new System.EventHandler(this.两点ToolStripMenuItem1_Click);
             // 
             // ChartWindowForm
             // 
@@ -266,5 +358,15 @@ namespace SPCWTest
         private System.Windows.Forms.ToolStripMenuItem 噪音峰ToolStripMenuItem;
         private System.Windows.Forms.TreeView LineTree;
         private System.Windows.Forms.ToolStripMenuItem processToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 视图ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 图表类型ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lineToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pointsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem splineToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem y轴比例ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 自动ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 测量ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 点点ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 两点ToolStripMenuItem1;
     }
 }

@@ -530,12 +530,7 @@ namespace SPCWTest
         }
         private void 触发ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DeviceCtn = false;
-          for (int i = 0; i < 10; i++)
-          {
              megaPhaseHD.HDSensor.FireSoftwareTrigger();
-             System.Threading.Thread.Sleep(2000);
-          }
         }
         private void 打开ToolStripMenuItem1_Click(object sender, EventArgs e)
         {

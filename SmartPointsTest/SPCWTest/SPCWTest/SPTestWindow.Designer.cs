@@ -53,11 +53,11 @@
             this.zRangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.levelingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pointsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.找拟合圆ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SPCTree = new System.Windows.Forms.TreeView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.SpcwPanle = new System.Windows.Forms.Panel();
-            this.dToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.找拟合圆ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -143,7 +143,7 @@
             this.megaPhaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.hDToolStripMenuItem});
             this.megaPhaseToolStripMenuItem.Name = "megaPhaseToolStripMenuItem";
-            this.megaPhaseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.megaPhaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.megaPhaseToolStripMenuItem.Text = "MegaPhase";
             // 
             // hDToolStripMenuItem
@@ -153,20 +153,20 @@
             this.触发ToolStripMenuItem,
             this.连续ToolStripMenuItem});
             this.hDToolStripMenuItem.Name = "hDToolStripMenuItem";
-            this.hDToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
+            this.hDToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.hDToolStripMenuItem.Text = "HD";
             // 
             // 打开ToolStripMenuItem1
             // 
             this.打开ToolStripMenuItem1.Name = "打开ToolStripMenuItem1";
-            this.打开ToolStripMenuItem1.Size = new System.Drawing.Size(100, 22);
+            this.打开ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.打开ToolStripMenuItem1.Text = "打开";
             this.打开ToolStripMenuItem1.Click += new System.EventHandler(this.打开ToolStripMenuItem1_Click);
             // 
             // 触发ToolStripMenuItem
             // 
             this.触发ToolStripMenuItem.Name = "触发ToolStripMenuItem";
-            this.触发ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.触发ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.触发ToolStripMenuItem.Text = "触发";
             this.触发ToolStripMenuItem.Click += new System.EventHandler(this.触发ToolStripMenuItem_Click);
             // 
@@ -176,20 +176,20 @@
             this.打开ToolStripMenuItem2,
             this.关闭ToolStripMenuItem});
             this.连续ToolStripMenuItem.Name = "连续ToolStripMenuItem";
-            this.连续ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.连续ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.连续ToolStripMenuItem.Text = "连续";
             // 
             // 打开ToolStripMenuItem2
             // 
             this.打开ToolStripMenuItem2.Name = "打开ToolStripMenuItem2";
-            this.打开ToolStripMenuItem2.Size = new System.Drawing.Size(100, 22);
+            this.打开ToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             this.打开ToolStripMenuItem2.Text = "打开";
             this.打开ToolStripMenuItem2.Click += new System.EventHandler(this.打开ToolStripMenuItem2_Click);
             // 
             // 关闭ToolStripMenuItem
             // 
             this.关闭ToolStripMenuItem.Name = "关闭ToolStripMenuItem";
-            this.关闭ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.关闭ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.关闭ToolStripMenuItem.Text = "关闭";
             this.关闭ToolStripMenuItem.Click += new System.EventHandler(this.关闭ToolStripMenuItem_Click);
             // 
@@ -209,7 +209,7 @@
             this.filterToolStripMenuItem,
             this.levelingToolStripMenuItem});
             this.dToolStripMenuItem.Name = "dToolStripMenuItem";
-            this.dToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.dToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.dToolStripMenuItem.Text = "3D";
             // 
             // fillToolStripMenuItem
@@ -257,6 +257,21 @@
             this.pointsToolStripMenuItem.Text = "3Points";
             this.pointsToolStripMenuItem.Click += new System.EventHandler(this.pointsToolStripMenuItem_Click);
             // 
+            // dToolStripMenuItem1
+            // 
+            this.dToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.找拟合圆ToolStripMenuItem});
+            this.dToolStripMenuItem1.Name = "dToolStripMenuItem1";
+            this.dToolStripMenuItem1.Size = new System.Drawing.Size(92, 22);
+            this.dToolStripMenuItem1.Text = "2D";
+            // 
+            // 找拟合圆ToolStripMenuItem
+            // 
+            this.找拟合圆ToolStripMenuItem.Name = "找拟合圆ToolStripMenuItem";
+            this.找拟合圆ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.找拟合圆ToolStripMenuItem.Text = "找拟合圆";
+            this.找拟合圆ToolStripMenuItem.Click += new System.EventHandler(this.找拟合圆ToolStripMenuItem_Click);
+            // 
             // SPCTree
             // 
             this.SPCTree.BackColor = System.Drawing.Color.Linen;
@@ -283,21 +298,6 @@
             this.SpcwPanle.Name = "SpcwPanle";
             this.SpcwPanle.Size = new System.Drawing.Size(1047, 635);
             this.SpcwPanle.TabIndex = 3;
-            // 
-            // dToolStripMenuItem1
-            // 
-            this.dToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.找拟合圆ToolStripMenuItem});
-            this.dToolStripMenuItem1.Name = "dToolStripMenuItem1";
-            this.dToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.dToolStripMenuItem1.Text = "2D";
-            // 
-            // 找拟合圆ToolStripMenuItem
-            // 
-            this.找拟合圆ToolStripMenuItem.Name = "找拟合圆ToolStripMenuItem";
-            this.找拟合圆ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.找拟合圆ToolStripMenuItem.Text = "找拟合圆";
-            this.找拟合圆ToolStripMenuItem.Click += new System.EventHandler(this.找拟合圆ToolStripMenuItem_Click);
             // 
             // SPTestWindow
             // 

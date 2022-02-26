@@ -20,8 +20,9 @@ namespace SPCWTest
                 HDSensor = HDSelectDialog.Device;
                 HDSensor.HoldState = false;
                 HDSensor.WorkingMode = WorkingModeType.WorkingMode3DSuperPrecise;
-                HDSensor.ExposureTime = 1000;
+                HDSensor.ExposureTime = 2500;
                 HDSensor.PreProcessLoopNum = 5;
+                HDSensor.LEDCurrent = 255;
                 HDSensor.TriggerSource = TriggerSourceType.TriggerSourceNoTrigger;
                 buffer3DCallBack = HDSensor.Set3DDataCallBackManaged(ScanCallBack, 10);
                 

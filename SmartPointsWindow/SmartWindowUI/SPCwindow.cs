@@ -938,16 +938,23 @@ namespace SPCwindowUI
         }
         public void Inilize()
         {
-            Origal_Bitmap = pointsCloud.GetBitmapColor();
-            Pant_Bitmap = (Bitmap)Origal_Bitmap.Clone();
-            graphics = Graphics.FromImage(Pant_Bitmap);
-            SPCWPictureBox.Image = Origal_Bitmap;
-            DelSPCWE();
-            RegSPCWE();
-            pointsCloud.lines.Clear();
-            pointsCloud.rects.Clear();
-            pointsCloud.circles.Clear();
-            pointsCloud.points.Clear();
+            if (pointsCloud==null)
+            {
+                Origal_Bitmap = new Bitmap(400,400);
+            }
+            else
+            {           
+                Origal_Bitmap = pointsCloud.GetBitmapColor();
+                Pant_Bitmap = (Bitmap)Origal_Bitmap.Clone();
+                graphics = Graphics.FromImage(Pant_Bitmap);
+                SPCWPictureBox.Image = Origal_Bitmap;
+                DelSPCWE();
+                RegSPCWE();
+                pointsCloud.lines.Clear();
+                pointsCloud.rects.Clear();
+                pointsCloud.circles.Clear();
+                pointsCloud.points.Clear();
+            }
         }
         public delegate void GetaInfoDelegate(string datainfo);
         public event GetaInfoDelegate GetInfoEvent;

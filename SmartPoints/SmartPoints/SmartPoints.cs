@@ -23,6 +23,39 @@ namespace SmartPoints
 {
     public class SmartPoints
     {
+        public  class SmartPointsInputBox 
+        {
+            public static string[] InputMessageBoxShow(string tips)
+            {
+                string inputstr = Interaction.InputBox("输入数据以','分隔"+"\r\n"+ tips, "SmartPointsInputBox");
+                string[] inputss = inputstr.Split(new char[] { ',' });
+                return inputss;
+            }
+            public static float[] ConvertToFloatarray(string[] ss)
+            {
+                float[] res = new float[ss.Length];
+                for (int i = 0; i < ss.Length; i++)
+                {
+                    if (!float.TryParse(ss[i], out res[i]))
+                    {
+                        res[i] = float.NaN;
+                    }
+                }
+                return res;
+            }
+            public static int[] ConvertToIntarray(string[] ss)
+            {
+                int[] res = new int[ss.Length];
+                for (int i = 0; i < ss.Length; i++)
+                {
+                    if (!int.TryParse(ss[i], out res[i]))
+                    {
+                        res[i] = 0;
+                    }
+                }
+                return res;
+            }
+        }
         public class TaskXml : XmlDocument
         {
             public TaskXml(string TaskName, List<string> cmdlist, List<List<string>> paramlist)
@@ -564,7 +597,7 @@ namespace SmartPoints
                     {
                         for (int x = 0; x < this.Width; x++)
                         {
-                            streamWriter.Write(this.Spcpoints.pointsz[x + y * this.Width]);
+                            streamWriter.Write(this.Spcpoints.pointsz[x + y * this.Width]*10);
                             if (x < this.Width - 1)
                             {
                                 streamWriter.Write(',');
@@ -886,7 +919,7 @@ namespace SmartPoints
                     aspcPoints.pointsx.AddRange(this.Spcpoints.pointsx.GetRange(s + this.Width * i, w));
                     aspcPoints.pointsy.AddRange(this.Spcpoints.pointsy.GetRange(s + this.Width * i, w));
                     aspcPoints.pointsz.AddRange(this.Spcpoints.pointsz.GetRange(s + this.Width * i, w));
-                    aspcPoints.pointsg.AddRange(this.Spcpoints.pointsg.GetRange(s + this.Width * i, w));
+                    //aspcPoints.pointsg.AddRange(this.Spcpoints.pointsg.GetRange(s + this.Width * i, w));
                 }
                 float maxf, minf = 0.0f;
                 float[] gs = new float[aspcPoints.pointsz.Count];
@@ -1865,21 +1898,16 @@ namespace SmartPoints
             public static byte[] GetSpcPointsGrayArray(UnmanagedDataFrameUndefinedStruct unknowdataframe, out int w, out int h, out float max, out float min)
             {
                 w = 0; h = 0;
-                byte[] vsg = new byte[w * h];
                 w = unknowdataframe.FrameInfo.DataInfo.XPixResolution;
                 h = unknowdataframe.FrameInfo.DataInfo.YPixResolution;
                 max = unknowdataframe.FrameInfo.DeviceInfo.ZMax;
                 min = -max;
-                ManagedDataFrameFloat3DStruct dataframe= unknowdataframe.ToManagedFloat3D();
-                for (int y = 0; y < h; y++)
-                {
-                    for (int x = 0; x < w; x++)
-                    {
-                        int i = x + y * w;
-                        vsg[i] = dataframe.Data[i].Gray;
-                    }
-                }
-                return vsg;
+                byte[] rawdatabytes;
+                ConvertMpSdata2rawbytes(unknowdataframe, out rawdatabytes);
+
+                ManagedDataFrameFloat3DStruct dataframe = unknowdataframe.ToManagedFloat3D();
+                int datat;
+                return ConvertMpSdataIndexbytes(DataFormatType.FixPointCloud, w, h, rawdatabytes, MPsdataindex.gray, out datat);
             }
             public static float[] GetSpcPointsArray_Sensor(UnmanagedDataFrameUndefinedStruct unknowdataframe, MPsdataindex mPsdataindex, out int w, out int h, out float max, out float min)
             {
