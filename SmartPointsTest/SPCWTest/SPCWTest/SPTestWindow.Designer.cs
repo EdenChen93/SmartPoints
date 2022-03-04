@@ -58,6 +58,9 @@
             this.SPCTree = new System.Windows.Forms.TreeView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.SpcwPanle = new System.Windows.Forms.Panel();
+            this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.transformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setZeroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,7 +90,7 @@
             // 打开ToolStripMenuItem
             // 
             this.打开ToolStripMenuItem.Name = "打开ToolStripMenuItem";
-            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.打开ToolStripMenuItem.Text = "打开";
             this.打开ToolStripMenuItem.Click += new System.EventHandler(this.打开ToolStripMenuItem_Click);
             // 
@@ -99,7 +102,7 @@
             this.tiffToolStripMenuItem,
             this.mpdatToolStripMenuItem});
             this.保存ToolStripMenuItem.Name = "保存ToolStripMenuItem";
-            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.保存ToolStripMenuItem.Text = "保存";
             // 
             // xyzToolStripMenuItem
@@ -153,20 +156,20 @@
             this.触发ToolStripMenuItem,
             this.连续ToolStripMenuItem});
             this.hDToolStripMenuItem.Name = "hDToolStripMenuItem";
-            this.hDToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hDToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.hDToolStripMenuItem.Text = "HD";
             // 
             // 打开ToolStripMenuItem1
             // 
             this.打开ToolStripMenuItem1.Name = "打开ToolStripMenuItem1";
-            this.打开ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.打开ToolStripMenuItem1.Size = new System.Drawing.Size(100, 22);
             this.打开ToolStripMenuItem1.Text = "打开";
             this.打开ToolStripMenuItem1.Click += new System.EventHandler(this.打开ToolStripMenuItem1_Click);
             // 
             // 触发ToolStripMenuItem
             // 
             this.触发ToolStripMenuItem.Name = "触发ToolStripMenuItem";
-            this.触发ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.触发ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.触发ToolStripMenuItem.Text = "触发";
             this.触发ToolStripMenuItem.Click += new System.EventHandler(this.触发ToolStripMenuItem_Click);
             // 
@@ -176,20 +179,20 @@
             this.打开ToolStripMenuItem2,
             this.关闭ToolStripMenuItem});
             this.连续ToolStripMenuItem.Name = "连续ToolStripMenuItem";
-            this.连续ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.连续ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.连续ToolStripMenuItem.Text = "连续";
             // 
             // 打开ToolStripMenuItem2
             // 
             this.打开ToolStripMenuItem2.Name = "打开ToolStripMenuItem2";
-            this.打开ToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.打开ToolStripMenuItem2.Size = new System.Drawing.Size(100, 22);
             this.打开ToolStripMenuItem2.Text = "打开";
             this.打开ToolStripMenuItem2.Click += new System.EventHandler(this.打开ToolStripMenuItem2_Click);
             // 
             // 关闭ToolStripMenuItem
             // 
             this.关闭ToolStripMenuItem.Name = "关闭ToolStripMenuItem";
-            this.关闭ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.关闭ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.关闭ToolStripMenuItem.Text = "关闭";
             this.关闭ToolStripMenuItem.Click += new System.EventHandler(this.关闭ToolStripMenuItem_Click);
             // 
@@ -207,9 +210,11 @@
             this.dToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fillToolStripMenuItem,
             this.filterToolStripMenuItem,
-            this.levelingToolStripMenuItem});
+            this.levelingToolStripMenuItem,
+            this.windowToolStripMenuItem,
+            this.transformToolStripMenuItem});
             this.dToolStripMenuItem.Name = "dToolStripMenuItem";
-            this.dToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.dToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.dToolStripMenuItem.Text = "3D";
             // 
             // fillToolStripMenuItem
@@ -217,13 +222,13 @@
             this.fillToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.中值ToolStripMenuItem});
             this.fillToolStripMenuItem.Name = "fillToolStripMenuItem";
-            this.fillToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.fillToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fillToolStripMenuItem.Text = "Fill";
             // 
             // 中值ToolStripMenuItem
             // 
             this.中值ToolStripMenuItem.Name = "中值ToolStripMenuItem";
-            this.中值ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.中值ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.中值ToolStripMenuItem.Text = "中值";
             this.中值ToolStripMenuItem.Click += new System.EventHandler(this.中值ToolStripMenuItem_Click);
             // 
@@ -232,7 +237,7 @@
             this.filterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.zRangeToolStripMenuItem});
             this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.filterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.filterToolStripMenuItem.Text = "Filter";
             // 
             // zRangeToolStripMenuItem
@@ -247,7 +252,7 @@
             this.levelingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pointsToolStripMenuItem});
             this.levelingToolStripMenuItem.Name = "levelingToolStripMenuItem";
-            this.levelingToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.levelingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.levelingToolStripMenuItem.Text = "Leveling";
             // 
             // pointsToolStripMenuItem
@@ -262,13 +267,13 @@
             this.dToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.找拟合圆ToolStripMenuItem});
             this.dToolStripMenuItem1.Name = "dToolStripMenuItem1";
-            this.dToolStripMenuItem1.Size = new System.Drawing.Size(92, 22);
+            this.dToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.dToolStripMenuItem1.Text = "2D";
             // 
             // 找拟合圆ToolStripMenuItem
             // 
             this.找拟合圆ToolStripMenuItem.Name = "找拟合圆ToolStripMenuItem";
-            this.找拟合圆ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.找拟合圆ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.找拟合圆ToolStripMenuItem.Text = "找拟合圆";
             this.找拟合圆ToolStripMenuItem.Click += new System.EventHandler(this.找拟合圆ToolStripMenuItem_Click);
             // 
@@ -298,6 +303,28 @@
             this.SpcwPanle.Name = "SpcwPanle";
             this.SpcwPanle.Size = new System.Drawing.Size(1047, 635);
             this.SpcwPanle.TabIndex = 3;
+            // 
+            // windowToolStripMenuItem
+            // 
+            this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
+            this.windowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.windowToolStripMenuItem.Text = "Window";
+            this.windowToolStripMenuItem.Click += new System.EventHandler(this.windowToolStripMenuItem_Click);
+            // 
+            // transformToolStripMenuItem
+            // 
+            this.transformToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setZeroToolStripMenuItem});
+            this.transformToolStripMenuItem.Name = "transformToolStripMenuItem";
+            this.transformToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.transformToolStripMenuItem.Text = "Transform";
+            // 
+            // setZeroToolStripMenuItem
+            // 
+            this.setZeroToolStripMenuItem.Name = "setZeroToolStripMenuItem";
+            this.setZeroToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setZeroToolStripMenuItem.Text = "SetZero";
+            this.setZeroToolStripMenuItem.Click += new System.EventHandler(this.setZeroToolStripMenuItem_Click);
             // 
             // SPTestWindow
             // 
@@ -351,6 +378,9 @@
         private System.Windows.Forms.ToolStripMenuItem mpdatToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 找拟合圆ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem transformToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setZeroToolStripMenuItem;
         //private System.Windows.Forms.TreeView SPCTree;
     }
 }

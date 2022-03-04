@@ -407,7 +407,7 @@ namespace SPCwindowUI
                     tools = GrapTools.ARect;
                     foreach (var item in pointsCloud.rects)
                     {
-                        DrawRect(item,Color.White);
+                        DrawRect(item,Color.Orange);
                     }
                     break;
                 case Keys.S:
@@ -765,7 +765,7 @@ namespace SPCwindowUI
                 case GrapTools.GetInfo:
                     if (GrapOn)
                     {
-                        GetInfoEvent(this.pointsCloud.GetValue(Mpoint.X, Mpoint.Y)[2].ToString()+Mpoint.ToString());
+                        GetInfoEvent(this.pointsCloud.GetValue(Mpoint.X, Mpoint.Y)[0]+","+Mpoint.X+","+Mpoint.Y);
                     }
                     break;
                 default:

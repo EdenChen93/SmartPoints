@@ -36,9 +36,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SmartPoints\SmartPoints\bin\Debug\MPSizectorDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SmartPointsWindow\SmartWindow3DUI\SmartWindow3D\packages\OpenTK.3.3\lib\net20\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="SmartPoints, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SmartPoints\SmartPoints\bin\Debug\SmartPoints.dll</HintPath>
+    </Reference>
+    <Reference Include="SmartWindow3D">
+      <HintPath>..\..\..\SmartPointsWindow\SmartWindow3DUI\SmartWindow3D\SmartWindow3D\bin\Debug\SmartWindow3D.dll</HintPath>
     </Reference>
     <Reference Include="SPCwindowUI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

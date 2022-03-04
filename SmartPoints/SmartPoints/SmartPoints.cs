@@ -505,6 +505,7 @@ namespace SmartPoints
         }
         public class SmartPointsCloud
         {
+            
             public SmartPointsCloud(string spcnme, string spcpath, string spcsource, int width, int height, float zmax, float zmin,Point tlpoint,Point rbpoint)
             {
                 this.SpcName = spcnme;
@@ -877,6 +878,61 @@ namespace SmartPoints
                 }
                 rtv.SaveDataFrame(FilePath+this.SpcName.Split('.')[0]+".mpdat",this.Zmin,this.Zmax);
             }
+            public void SetSpcOriPoint(RoiAreaPoint rectangle)
+            {
+                int ori = rectangle.rectangle.Location.X + rectangle.rectangle.Location.Y * this.Width;
+                float xf = this.Spcpoints.pointsx[ori];
+                float yf = this.Spcpoints.pointsy[ori];
+                float zf = this.Spcpoints.pointsz[ori];
+
+
+                for (int y = 0; y < this.Height; y++)
+                {
+                    for (int x = 0; x < this.Width; x++)
+                    {
+                        int i = y * this.Width + x;
+                        this.Spcpoints.pointsx[i] -= xf;
+                        this.Spcpoints.pointsy[i] -= yf;
+                        this.Spcpoints.pointsz[i] -= zf;
+                    }
+                }
+                this.Zmax-= zf;
+                this.Zmin-= zf;
+            }
+            public float[] ToFloatArrayXYZRGB()
+            {
+                float[] rgb = SP_Image.Float2RgbFloat(this.Spcpoints.pointsz.ToArray(), Width, Height, Zmax, Zmin);
+                float[] ds = new float[this.Width * this.Height*6];
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int x = 0; x < Width; x++)
+                    {
+                        int i = x + y * Width;
+                        ds[i * 6] = Spcpoints.pointsx[i];
+                        ds[i * 6 + 1] = Spcpoints.pointsy[i];
+                        ds[i * 6 + 2] = Spcpoints.pointsz[i];
+                        ds[i * 6 + 3] = rgb[i * 3];
+                        ds[i * 6 + 4] = rgb[i * 3 + 1];
+                        ds[i * 6 + 5] = rgb[i * 3 + 2];
+                    }
+                }
+                return ds;
+            }
+            public float[] ToFloatArrayXYZ()
+            {
+                float[] ds = new float[this.Width * this.Height * 3];
+                for (int y = 0; y < this.Height; y++)
+                {
+                    for (int x = 0; x < this.Width; x++)
+                    {
+                        int i = x + y * this.Width;
+                        ds[i * 3] = this.Spcpoints.pointsx[i];
+                        ds[i * 3 + 1] = this.Spcpoints.pointsy[i];
+                        ds[i * 3 + 2] = this.Spcpoints.pointsz[i];
+                    }
+                }
+                return ds;
+            }
             public SmartPointsCloud RectangleCliping(Point TLCorner,Point RBCorner)
             {
                 int w = Math.Abs(TLCorner.X - RBCorner.X);
@@ -981,6 +1037,7 @@ namespace SmartPoints
             }
             public List<double> LineCliping( Point[] poss, out List<vec4> point3Ds)
             {
+                
                 float[] points = this.Spcpoints.pointsz.ToArray();
                 int w = this.Width;
                 point3Ds = new List<vec4>();
@@ -1173,6 +1230,201 @@ namespace SmartPoints
                     return parameter;
                 }
             }
+            public List<double> LineClipingFloatX(Point[] poss, out List<float> pointsz)
+            {
+                float[] points = this.Spcpoints.pointsx.ToArray();
+                int w = this.Width;
+                pointsz = new List<float>();
+                Tuple<double, double> tuple = new Tuple<double, double>(0, 0);
+                List<double> parameter = new List<double>();
+                try
+                {
+                    if (poss.Length > 1)
+                    {
+                        vec4 point = new vec4();
+                        int Line_num = poss.Length - 1;
+                        for (int i = 0; i < Line_num; i++)
+                        {
+                            double[] x = new double[2]; x[0] = poss[i].X; x[1] = poss[i + 1].X;
+                            double[] y = new double[2]; y[0] = poss[i].Y; y[1] = poss[i + 1].Y;
+                            tuple = Fit.Line(x, y);
+                            parameter.Add(tuple.Item1); parameter.Add(tuple.Item2);
+                            if (tuple.Item2 > 1f || tuple.Item2 < -1f)
+                            {
+                                if (y[0] > y[1])
+                                {
+                                    for (int n = (int)y[0]; n > (int)y[1]; n = n - (int)(y[0] - y[1]) / Math.Abs((int)(y[0] - y[1])))
+                                    {
+                                        point.x = (float)((n - tuple.Item1) / tuple.Item2);
+                                        point.y = n;
+                                        point.z = points[(int)point.x + (int)point.y * w];
+                                        //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                        //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Z;
+                                        pointsz.Add(point.z);
+                                    }
+                                }
+                                else
+                                {
+                                    for (int n = (int)y[0]; n < (int)y[1]; n = n - (int)(y[0] - y[1]) / Math.Abs((int)(y[0] - y[1])))
+                                    {
+                                        point.x = (float)((n - tuple.Item1) / tuple.Item2);
+                                        point.y = n;
+                                        point.z = points[(int)point.x + (int)point.y * w];
+                                        //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                        //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Y;
+                                        pointsz.Add(point.z);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (x[0] > x[1])
+                                {
+                                    for (int n = (int)x[0]; n > (int)x[1]; n = n - (int)(x[0] - x[1]) / Math.Abs((int)(x[0] - x[1])))
+                                    {
+                                        point.x = n;
+                                        point.y = (float)(tuple.Item2 * n + tuple.Item1);
+                                        point.z = points[(int)point.x + (int)point.y * w];
+                                        //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                        //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Y;
+                                        pointsz.Add(point.z);
+                                    }
+                                }
+                                else
+                                {
+                                    for (int n = (int)x[0]; n < (int)x[1]; n = n - (int)(x[0] - x[1]) / Math.Abs((int)(x[0] - x[1])))
+                                    {
+                                        point.x = n;
+                                        point.y = (float)(tuple.Item2 * n + tuple.Item1);
+                                        point.z = points[(int)point.x + (int)point.y * w];
+                                        //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                        //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Y;
+                                        pointsz.Add(point.z);
+                                    }
+                                }
+
+                            }
+                            if (pointsz.Count == 0)
+                            {
+                                for (int n = (int)y[0]; n < (int)y[1]; n = n - (int)(y[0] - y[1]) / Math.Abs((int)(y[0] - y[1])))
+                                {
+
+                                    point.x = (float)x[0];
+                                    point.y = n;
+                                    point.z = points[(int)point.x + (int)point.y * w];
+                                    //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                    //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Y;
+                                    pointsz.Add(point.z);
+                                }
+                            }
+                        }
+                    }
+                    return parameter;
+
+                }
+                catch (Exception)
+                {
+                    return parameter;
+                }
+            }
+            public List<double> LineClipingFloatY(Point[] poss, out List<float> pointsz)
+            {
+                float[] points = this.Spcpoints.pointsy.ToArray();
+                int w = this.Width;
+                pointsz = new List<float>();
+                Tuple<double, double> tuple = new Tuple<double, double>(0, 0);
+                List<double> parameter = new List<double>();
+                try
+                {
+                    if (poss.Length > 1)
+                    {
+                        vec4 point = new vec4();
+                        int Line_num = poss.Length - 1;
+                        for (int i = 0; i < Line_num; i++)
+                        {
+                            double[] x = new double[2]; x[0] = poss[i].X; x[1] = poss[i + 1].X;
+                            double[] y = new double[2]; y[0] = poss[i].Y; y[1] = poss[i + 1].Y;
+                            tuple = Fit.Line(x, y);
+                            parameter.Add(tuple.Item1); parameter.Add(tuple.Item2);
+                            if (tuple.Item2 > 1f || tuple.Item2 < -1f)
+                            {
+                                if (y[0] > y[1])
+                                {
+                                    for (int n = (int)y[0]; n > (int)y[1]; n = n - (int)(y[0] - y[1]) / Math.Abs((int)(y[0] - y[1])))
+                                    {
+                                        point.x = (float)((n - tuple.Item1) / tuple.Item2);
+                                        point.y = n;
+                                        point.z = points[(int)point.x + (int)point.y * w];
+                                        //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                        //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Z;
+                                        pointsz.Add(point.z);
+                                    }
+                                }
+                                else
+                                {
+                                    for (int n = (int)y[0]; n < (int)y[1]; n = n - (int)(y[0] - y[1]) / Math.Abs((int)(y[0] - y[1])))
+                                    {
+                                        point.x = (float)((n - tuple.Item1) / tuple.Item2);
+                                        point.y = n;
+                                        point.z = points[(int)point.x + (int)point.y * w];
+                                        //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                        //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Y;
+                                        pointsz.Add(point.z);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (x[0] > x[1])
+                                {
+                                    for (int n = (int)x[0]; n > (int)x[1]; n = n - (int)(x[0] - x[1]) / Math.Abs((int)(x[0] - x[1])))
+                                    {
+                                        point.x = n;
+                                        point.y = (float)(tuple.Item2 * n + tuple.Item1);
+                                        point.z = points[(int)point.x + (int)point.y * w];
+                                        //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                        //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Y;
+                                        pointsz.Add(point.z);
+                                    }
+                                }
+                                else
+                                {
+                                    for (int n = (int)x[0]; n < (int)x[1]; n = n - (int)(x[0] - x[1]) / Math.Abs((int)(x[0] - x[1])))
+                                    {
+                                        point.x = n;
+                                        point.y = (float)(tuple.Item2 * n + tuple.Item1);
+                                        point.z = points[(int)point.x + (int)point.y * w];
+                                        //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                        //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Y;
+                                        pointsz.Add(point.z);
+                                    }
+                                }
+
+                            }
+                            if (pointsz.Count == 0)
+                            {
+                                for (int n = (int)y[0]; n < (int)y[1]; n = n - (int)(y[0] - y[1]) / Math.Abs((int)(y[0] - y[1])))
+                                {
+
+                                    point.x = (float)x[0];
+                                    point.y = n;
+                                    point.z = points[(int)point.x + (int)point.y * w];
+                                    //point.X = points.Data[(int)point.X + (int)point.Y * image_w].X;
+                                    //point.Y = points.Data[(int)point.X + (int)point.Y * image_w].Y;
+                                    pointsz.Add(point.z);
+                                }
+                            }
+                        }
+                    }
+                    return parameter;
+
+                }
+                catch (Exception)
+                {
+                    return parameter;
+                }
+            }
+
             public List<double> LineClipingFloatA(Rectangle poss, out List<float> pointsz)
             {
                 float[] points = this.Spcpoints.pointsz.ToArray();
@@ -1434,13 +1686,39 @@ namespace SmartPoints
                 Random random = new Random();
                 List<float> h_line;
                 List<float> v_line;
+                List<float> x_line;
+                List<float> y_line;
                 List<float> h_matpoints = new List<float>();
+                List<float> x_matpoints = new List<float>();
+                List<float> y_matpoints = new List<float>();
+
+                for (int y = 0; y < this.Height; y++)
+                {
+                    for (int x = 0; x < this.Width; x++)
+                    {
+                        if (float.IsNaN(this.Spcpoints.pointsz[x + y * this.Width]))
+                        {
+                            this.Spcpoints.pointsx[x + y * this.Width] = float.NaN;
+                            this.Spcpoints.pointsy[x + y * this.Width] = float.NaN;
+                        } 
+                    }
+                }
+
                 for (int y = 0; y < this.Height; y++)
                 {
                     this.LineClipingFloatA(new Point[] { new Point(0, y), new Point(this.Width, y) }, out h_line);
+                    this.LineClipingFloatX(new Point[] { new Point(0, y), new Point(this.Width, y) }, out x_line);
+                    this.LineClipingFloatY(new Point[] { new Point(0, y), new Point(this.Width, y) }, out y_line);
+
                     SP_Translate.FindPointsCollection(h_line, SpliterPoints);
                     SP_Translate.FillPointsCollection(h_line, "m");
+                    SP_Translate.FindPointsCollection(x_line, SpliterPoints);
+                    SP_Translate.FillPointsCollection(x_line, "m");
+                    SP_Translate.FindPointsCollection(y_line, SpliterPoints);
+                    SP_Translate.FillPointsCollection(y_line, "m");
                     h_matpoints.AddRange(h_line);
+                    x_matpoints.AddRange(x_line);
+                    y_matpoints.AddRange(y_line);
                 }
                 for (int x = 0; x < this.Width; x++)
                 {
@@ -1451,6 +1729,8 @@ namespace SmartPoints
                     {
                         int i = y * this.Width + x;
                         this.Spcpoints.pointsz[i] = (v_line[y] + h_matpoints[i]) / 2 + random.Next(10, 100) * 0.0001f;
+                        this.Spcpoints.pointsx[i] = x_matpoints[i];
+                        this.Spcpoints.pointsy[i] = y_matpoints[i];
                     }
                 }
                 this.ProcessXml.AddCmd(Enum.GetName(typeof(ProcessCmd), ProcessCmd.FIN));
@@ -2985,6 +3265,23 @@ namespace SmartPoints
                 }
                 return bitmapdatabytes;
             }
+            public static float[] Float2RgbFloat(float[] vs, int w, int h, float maxf, float minf)
+            {
+
+                float[] fs = new float[w * h * 3];
+                for (int y = 0; y < h; y++)
+                {
+                    for (int x = 0; x < w; x++)
+                    {
+                        int i = w * y + x;
+                        Color temp = SP_Color.TransZToRgbColor(vs[i], maxf, minf);
+                        fs[i * 3+2] = temp.B/255.0f; 
+                        fs[i * 3 + 1] = temp.G/255.0f;
+                        fs[i * 3 ] = temp.R/255.0f;
+                    }
+                }
+                return fs;
+            }
             public static byte[] Float2GrayBytes(float[] vs, int w, int h, float maxf, float minf)
             {
 
@@ -3866,6 +4163,45 @@ namespace SmartPoints
                         pointsCloud.Spcpoints.pointsz[i] = (v_line[y] + h_matpoints[i]) / 2+random.Next(10,100)*0.0001f;
                     }
                 }
+            }
+            public static float[] CvFitPlane(float[] ps)
+            {
+                
+                Emgu.CV.Matrix<float> points = new Matrix<float>( 3, ps.Length/3, 1);
+                Buffer.BlockCopy(ps, 0, points.Data, 0, sizeof(float) * ps.Length);
+                int nrows = points.Rows;
+                int ncols = points.Cols;
+                Emgu.CV.Matrix<float> centroid = new Matrix<float>(1, ncols);
+                centroid.SetValue(0);
+                for (int c = 0; c < ncols; c++)
+                {
+                    for (int r = 0; r < nrows; r++)
+                    {
+                        centroid.Data[0,c] += points.Data[r,c];
+                    }
+                    centroid.Data[0,c] /= nrows;
+                }
+                // Subtract geometric centroid from each point.  
+                Emgu.CV.Matrix<float> points2 =new Matrix<float>(ps.Length/3, 3, 1);
+                points2.SetValue(1);
+                for (int r = 0; r < nrows; r++)
+                    for (int c = 0; c < ncols; c++)
+                       points2.Data[c,r] = points.Data[r,c] - centroid.Data[0, c];
+                // Evaluate SVD of covariance matrix.  
+                Emgu.CV.Matrix<float> A = new Matrix<float>(ncols, ncols);
+                Emgu.CV.Matrix<float> W = new Matrix<float>(ncols, ncols);
+                Emgu.CV.Matrix<float> V = new Matrix<float>(ncols, ncols);
+                Emgu.CV.Matrix<float> U = new Matrix<float>(ncols, ncols);
+                CvInvoke.Gemm(points2, points, 1, null, 0, A, GemmType.Default);
+                CvInvoke.SVDecomp(A, W,U, V, SvdFlag.Default);
+                // Assign plane coefficients by singular vector corresponding to smallest singular value.  
+                Emgu.CV.Matrix<float> plane =new Matrix<float>(ncols+1,1,1);
+                for (int c = 0; c < ncols; c++)
+                {
+                    plane[c,0] = V.Data[ncols-1,  c];
+                    plane[ncols, 0] += plane[c, 0] * centroid[0, c];
+                }
+                return new float[] { plane[0,0],plane[1,0],plane[2,0],plane[3,0]};
             }
         }
     }

@@ -93,7 +93,7 @@ namespace Double_Mps_Thickness
         }
         private void Sensor2_DataProcessEvent(SmartPoints.SmartPoints.SmartPointsCloud cloud)
         {
-            cloud.FilterZRange(2f, -2f);
+            cloud.FilterZRange(20f, -2f);
             spcw2.pointsCloud = cloud;
             spcw2.Inilize();
         }
@@ -307,7 +307,7 @@ namespace Double_Mps_Thickness
         {
             SmartPoints.SmartPoints.SmartPointsCloud cloud1 = spcw1.pointsCloud.RectangleCliping(Roi_Measure_Area);
             SmartPoints.SmartPoints.SmartPointsCloud cloud2 = spcw2.pointsCloud.RectangleCliping(Roi_Measure_Area);
-            SmartPoints.SmartPoints.SmartPointsCloud pointsCloud = new SmartPoints.SmartPoints.SmartPointsCloud("Compose", "", "SmartPoints", cloud2.Width, cloud2.Height, -5, 5, Point.Empty, new Point(cloud2.Width, cloud2.Height));
+            SmartPoints.SmartPoints.SmartPointsCloud pointsCloud = new SmartPoints.SmartPoints.SmartPointsCloud("Compose", "", "SmartPoints", cloud2.Width, cloud2.Height, -2, 15, Point.Empty, new Point(cloud2.Width, cloud2.Height));
             for (int y = 0; y < cloud2.Height; y++)
             {
                 for (int x = 0; x < cloud2.Width; x++)

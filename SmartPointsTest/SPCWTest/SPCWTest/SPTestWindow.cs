@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using SmartPoints;
 using SPCwindowUI;
+using SmartWindow3D;
 
 namespace SPCWTest
 {
@@ -666,7 +667,6 @@ namespace SPCWTest
             ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.FillNaN(5);
             UpdateSpctree_ProcessInfo();
             ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).Inilize();
-
         }
         private void xyzToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -849,6 +849,19 @@ namespace SPCWTest
                 UpdateSpctree_OutputInfo(node);
             }
             ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).SPCWPictureBox.Image = cbitmap;
+        }
+
+        private void windowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            gw gw = new gw(800, 600, ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.SpcName + "3D power by OpenTK");
+            gw._vertices = ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.ToFloatArrayXYZRGB();
+            gw.Run();
+        }
+
+        private void setZeroToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.SetSpcOriPoint(((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).pointsCloud.points[0]);
+            ((SPCwindowUI.SPCwindow)this.SpcwPanle.Controls[SpcIndex]).Inilize();
         }
     }
 }
